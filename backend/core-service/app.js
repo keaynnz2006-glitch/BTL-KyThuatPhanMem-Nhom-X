@@ -1,14 +1,17 @@
 const express = require('express');
-const balanceController = require('./src/controllers/balance.controller');
+const cors = require('cors');
+const apiRoutes = require('./src/routes/authRoutes');
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
-// Định nghĩa API Endpoint theo quy chuẩn số nhiều và kebab-case
-// Dấu :userId đại diện cho tham số động truyền vào
-app.get('/api/balances/:userId', balanceController.getBalance);
+// Tất cả các API sẽ có tiền tố là /api
+app.use('/api', apiRoutes);
 
 const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => console.log(`🚀 Core Service đang chạy mượt mà tại cổng http://localhost:${PORT}`));
+}
+
+module.exports = app; // Export app ra để làm Unit Test

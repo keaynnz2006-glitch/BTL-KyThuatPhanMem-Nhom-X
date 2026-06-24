@@ -4,7 +4,7 @@ const stockRoutes = require('./src/routes/stock.routes');
 const playRoutes = require('./src/routes/play.routes');
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 app.use(express.json());
 
