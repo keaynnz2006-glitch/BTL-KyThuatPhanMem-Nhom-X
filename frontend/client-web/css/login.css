@@ -9,16 +9,16 @@ body{
 }
 
 .background{
-    position:absolute;
-    width:100%;
-    height:100%;
-    background:
-        radial-gradient(circle at top left,
-        rgba(255,255,255,.25),
-        transparent 35%),
-        radial-gradient(circle at bottom right,
-        rgba(255,255,255,.18),
-        transparent 35%);
+    background:linear-gradient(
+    135deg,
+    #FFD6E8 0%,
+    #EAD7FF 40%,
+    #CDB7FF 100%
+);
+
+min-height:100vh;
+
+color:#333;
 }
 
 .login-card{
@@ -114,8 +114,11 @@ body{
 }
 
 .btn-login:hover{
-    transform:translateY(-3px);
-    background:#f8f8f8;
+    transform:translateY(-4px);
+
+box-shadow:
+
+0 15px 25px rgba(139,92,246,.35);
 }
 
 .switch-mode{
@@ -156,8 +159,10 @@ body{
 }
 
 .logo{
-    width:70px;
-    height:70px;
-    font-size:36px;
+   font-size:38px;
+
+font-weight:800;
+
+color:#5B4DFF;
 }
 }

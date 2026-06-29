@@ -63,8 +63,9 @@ tbody tr:hover{
 }
 
 .gift-card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    ttransform:translateY(-4px);
+    box-shadow:
+    0 15px 25px rgba(139,92,246,.35);
 }
 
 .gift-icon{
