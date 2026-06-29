@@ -1,152 +1,153 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lịch Sử & Đổi Quà - Cửa Hàng Gắp Gấu Pro</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #f1f2f6; color: #2d3436; }
-
-        /* Navigation Bar */
-        nav { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .logo { font-size: 22px; font-weight: bold; color: #6c5ce7; display: flex; align-items: center; gap: 8px; cursor: pointer; }
-        .user-info { display: flex; align-items: center; gap: 20px; }
-        .coin-badge { background: #ffeaa7; color: #d63031; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 14px; border: 1px solid #fdcb6e; }
-        .btn-nav { background: #6c5ce7; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: 14px; }
-        .btn-nav:hover { background: #5b4cc4; }
-
-        /* Main Container */
-        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
-
-        /* Khung nội dung */
-        .history-gift-container { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-        .dashboard-box { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        .dashboard-box h3 { margin-bottom: 20px; font-size: 18px; color: #2d3436; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        
-        /* Bảng lịch sử */
-        .history-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
-        .history-table th, .history-table td { padding: 12px; border-bottom: 1px solid #dfe6e9; }
-        .history-table th { background: #f8f9fa; color: #636e72; font-weight: 600; }
-        .badge-result { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; }
-        .badge-win { background: #d4edda; color: #155724; }
-        .badge-lose { background: #f8d7da; color: #721c24; }
-
-        /* Danh sách đổi quà */
-        .gift-list { display: flex; flex-direction: column; gap: 12px; }
-        .gift-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f8f9fa; border-radius: 10px; border: 1px solid #e4e7eb; }
-        .gift-info { display: flex; align-items: center; gap: 12px; }
-        .gift-icon { font-size: 24px; }
-        .gift-name { font-weight: 600; font-size: 15px; }
-        .gift-points { font-size: 13px; color: #ff7675; font-weight: bold; }
-        .btn-exchange { background: #10ac84; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-exchange:hover { background: #0ee0a4; }
-    </style>
+    <title>Lịch sử - Royal Teddy Machine</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/history.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 </head>
-<body>
 
-    <nav>
-        <div class="logo" onclick="window.location.href='index.html'">🧸 MÁY GẮP GẤU HOÀNG GIA</div>
-        <div class="user-info">
-            <span id="user-display" style="font-weight: 600;">Xin chào, Bro!</span>
-            <div id="coin-balance" class="coin-badge">💰 0 Xu</div>
-            <a href="index.html" class="btn-nav">🏠 Quay về Trang Chủ</a>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">
+            🧸 Royal Teddy Machine
+        </div>
+        <div class="nav-right">
+            <span id="user-display">
+                Xin chào
+            </span>
+            <div id="coin-balance" class="coin-box">
+                💰 0 Xu
+            </div>
+            <a href="index.html" class="btn btn-blue">
+                🏠 Trang chủ
+            </a>
         </div>
     </nav>
 
-    <div class="container">
-        <div class="history-gift-container">
-            <div class="dashboard-box">
-                <h3>📜 Lịch Sử Chơi Gắp Gấu</h3>
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Thời gian</th>
-                            <th>Tên Máy</th>
-                            <th>Kết quả</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>22:05 - Hôm nay</td>
-                            <td>Máy Cáo Đuôi Đỏ</td>
-                            <td><span class="badge-result badge-win">🎉 TRÚNG GẤU</span></td>
-                        </tr>
-                        <tr>
-                            <td>21:58 - Hôm nay</td>
-                            <td>Máy Gấu Teddy</td>
-                            <td><span class="badge-result badge-lose">❌ HỤT RỒI</span></td>
-                        </tr>
-                        <tr>
-                            <td>Hôm qua</td>
-                            <td>Máy Mèo Hoàng Thượng</td>
-                            <td><span class="badge-result badge-win">🎉 TRÚNG GẤU</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    <!-- TIÊU ĐỀ -->
+    <section class="page-title">
+        <h1>
+            📜 Lịch sử & Đổi quà
+        </h1>
+        <p>
+            Theo dõi lịch sử chơi và đổi phần thưởng
+        </p>
+    </section>
 
-            <div class="dashboard-box">
-                <h3>🎁 Kho Đổi Quà (Dựa trên bảng PhieuDoiQua)</h3>
-                <div class="gift-list">
-                    <div class="gift-item">
-                        <div class="gift-info">
-                            <span class="gift-icon">🍹</span>
-                            <div>
-                                <div class="gift-name">Voucher Trà Sữa TocoToco Free</div>
-                                <div class="gift-points">Yêu cầu: Tích lũy 2 Gấu Bông</div>
-                            </div>
-                        </div>
-                        <button class="btn-exchange" onclick="handleExchange('Voucher Trà Sữa')">Đổi Quà</button>
-                    </div>
-                    <div class="gift-item">
-                        <div class="gift-info">
-                            <span class="gift-icon">🧸</span>
-                            <div>
-                                <div class="gift-name">Gấu Bông Capybara Đời Thực (Size L)</div>
-                                <div class="gift-points">Yêu cầu: Tích lũy 5 Gấu Bông</div>
-                            </div>
-                        </div>
-                        <button class="btn-exchange" onclick="handleExchange('Gấu Bông Capybara')">Đổi Quà</button>
-                    </div>
+    <!-- DASHBOARD -->
+    <div class="dashboard">
+        <!-- LỊCH SỬ -->
+        <div class="card">
+            <h2>
+                🎮 Lịch sử chơi
+            </h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Thời gian</th>
+                        <th>Máy</th>
+                        <th>Kết quả</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>22:05</td>
+                        <td>Máy Cáo Đuôi Đỏ</td>
+                        <td>
+                            <span class="win">
+                                🎉 Trúng
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>21:58</td>
+                        <td>Máy Teddy</td>
+                        <td>
+                            <span class="lose">
+                                ❌ Trượt
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Hôm qua</td>
+                        <td>Máy Mèo</td>
+                        <td>
+                            <span class="win">
+                                🎉 Trúng
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ĐỔI QUÀ -->
+        <div class="card">
+            <h2>
+                🎁 Đổi quà
+            </h2>
+            <div class="gift-card">
+                <div class="gift-icon">
+                    🍹
                 </div>
+                <div class="gift-info">
+                    <h3>
+                        Voucher Trà Sữa
+                    </h3>
+                    <p>
+                        Cần 2 Gấu Bông
+                    </p>
+                </div>
+                <button
+                    class="btn-main"
+                    onclick="handleExchange('Voucher Trà Sữa')">
+                    Đổi
+                </button>
+            </div>
+            <div class="gift-card">
+                <div class="gift-icon">
+                    🧸
+                </div>
+                <div class="gift-info">
+                    <h3>
+                        Gấu Capybara Size L
+                    </h3>
+                    <p>
+                        Cần 5 Gấu Bông
+                   </p>
+                </div>
+                <button
+                    class="btn-main"
+                    onclick="handleExchange('Capybara')">
+                    Đổi
+                </button>
+            </div>
+            <div class="gift-card">
+                <div class="gift-icon">
+                    🎁
+                </div>
+                <div class="gift-info">
+                    <h3>
+                        Hộp Quà Bí Mật
+                    </h3>
+                    <p>
+                        Cần 8 Gấu Bông
+                    </p>
+                </div>
+                <button
+                    class="btn-main"
+                    onclick="handleExchange('Hộp Quà')">
+                    Đổi
+                </button>
             </div>
         </div>
     </div>
-
-    <script>
-        const CORE_SERVICE_URL = 'http://localhost:3000/api';
-        const userId = localStorage.getItem('user_id');
-        const token = localStorage.getItem('user_token');
-
-        if (!token || !userId) {
-            window.location.href = 'login.html';
-        }
-
-        // Tự động gọi API lấy số dư đồng bộ với trang chủ
-        async function loadUserDashboard() {
-            try {
-                const response = await fetch(`${CORE_SERVICE_URL}/user/balance`, {
-                    method: 'GET',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await response.json();
-
-                if (response.ok) {
-                    document.getElementById('user-display').innerText = `Xin chào, ${data.fullName}!`;
-                    document.getElementById('coin-balance').innerText = `💰 ${data.coins} Xu`;
-                }
-            } catch (error) {
-                console.error('Lỗi kết nối:', error);
-            }
-        }
-
-        function handleExchange(giftName) {
-            alert(` Yêu cầu đổi quà [${giftName}] của bạn đã được ghi nhận thành công!
-                \nHệ thống đang tạo phiếu đổi quà (PhieuDoiQua) chờ Admin phê duyệt `);
-        }
-
-        loadUserDashboard();
-    </script>
+    <script src="js/history.js"></script>
 </body>
 </html>

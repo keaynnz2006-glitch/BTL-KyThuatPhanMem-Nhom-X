@@ -1,0 +1,164 @@
+.dashboard{
+    width:90%;
+    margin:auto;
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    gap:30px;
+    margin-bottom:50px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+thead{
+    background:#6c63ff;
+}
+thead th{
+    color:white;
+    padding:16px;
+    text-align:left;
+}
+tbody td{
+    padding:16px;
+    border-bottom:1px solid #ececec;
+}
+tbody tr{
+    transition:.3s;
+}
+tbody tr:hover{
+    background:#f5f4ff;
+
+}
+
+.win{
+    background:#dcfce7;
+    color:#16a34a;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.lose{
+    background:#fee2e2;
+    color:#dc2626;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.gift-card{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding:18px;
+    border-radius:18px;
+    background:white;
+    border:1px solid #e5e7eb;
+    margin-bottom:18px;
+    transition:.3s;
+}
+
+.gift-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.gift-icon{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    background:#f4f3ff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:34px;
+    flex-shrink:0;
+}
+
+.gift-info{
+    flex:1;
+}
+
+.gift-info h3{
+    font-size:18px;
+    margin-bottom:6px;
+    color:#333;
+}
+
+.gift-info p{
+    color:#777;
+    font-size:14px;
+}
+
+.gift-card button{
+    width:120px;
+}
+
+.page-title{
+    text-align:center;
+    margin:40px auto;
+}
+
+.page-title h1{
+    font-size:38px;
+    color:#333;
+    margin-bottom:10px;
+}
+
+.page-title p{
+    color:#777;
+    font-size:16px;
+}
+
+.card{
+    animation:fadeIn .7s ease;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(35px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@media(max-width:900px){
+.dashboard{
+    grid-template-columns:1fr;
+}
+}
+
+@media(max-width:768px){
+.gift-card{
+    flex-direction:column;
+    text-align:center;
+}
+
+.gift-card button{
+    width:100%;
+}
+
+.page-title h1{
+    font-size:30px;
+}
+
+.page-title p{
+    font-size:15px;
+}
+
+table{
+    font-size:14px;
+}
+
+thead th,
+tbody td{
+    padding:12px;
+}
+}

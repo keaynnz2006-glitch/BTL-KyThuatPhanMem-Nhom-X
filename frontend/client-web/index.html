@@ -3,227 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang Chủ - Cửa Hàng Gắp Gấu Pro</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #f1f2f6; color: #2d3436; }
+    <title>Royal Teddy Machine</title>
 
-        /* Navigation Bar */
-        nav { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .logo { font-size: 22px; font-weight: bold; color: #6c5ce7; display: flex; align-items: center; gap: 8px; }
-        .user-info { display: flex; align-items: center; gap: 20px; }
-        .coin-badge { background: #ffeaa7; color: #d63031; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 14px; border: 1px solid #fdcb6e; }
-        .btn-logout { background: #ff7675; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-logout:hover { background: #e17055; }
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/home.css">
 
-        /* Main Container */
-        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
-
-        /* CSS KHU VỰC NẠP XU */
-        .recharge-section { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        .recharge-section h3 { margin-bottom: 20px; font-size: 18px; color: #2d3436; font-weight: 700; }
-        
-        /* Grid chọn gói tiền */
-        .amount-presets { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; margin-bottom: 20px; }
-        .preset-btn { background: #f1f2f6; border: 2px solid transparent; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; text-align: center; transition: 0.2s; }
-        .preset-btn:hover { background: #e4e7eb; }
-        .preset-btn.active { background: #eef2ff; border-color: #6c5ce7; color: #6c5ce7; }
-
-        /* Ô nhập tiền tùy chỉnh */
-        .custom-amount-box { margin-bottom: 20px; }
-        .custom-amount-box input { width: 100%; max-width: 400px; padding: 12px; border: 2px solid #dfe6e9; border-radius: 10px; font-size: 15px; font-weight: 600; outline: none; transition: 0.2s; }
-        .custom-amount-box input:focus { border-color: #6c5ce7; }
-
-        /* Khu vực chọn ví điện tử */
-        .payment-methods { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
-        .method-card { flex: 1; min-width: 130px; border: 2px solid #dfe6e9; padding: 12px; border-radius: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; transition: 0.2s; }
-        .method-card:hover { border-color: #b2bec3; }
-        .method-card img { width: 35px; height: 35px; border-radius: 8px; object-fit: cover; }
-        .method-card.active { border-color: #10ac84; background: #ebfbf7; color: #10ac84; }
-
-        .btn-recharge-submit { background: #6c5ce7; color: white; border: none; width: 100%; max-width: 400px; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2); transition: 0.2s; }
-        .btn-recharge-submit:hover { background: #5b4cc4; transform: translateY(-1px); }
-
-        /* Grid Machines */
-        .section-title { font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #2d3436; }
-        .machine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        
-        /* Card Thiết kế Máy gắp gấu */
-        .machine-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 6px 15px rgba(0,0,0,0.05); transition: 0.3s; position: relative; }
-        .machine-card:hover { transform: translateY(-5px); }
-        .machine-img { width: 100%; height: 180px; background: #a29bfe; display: flex; justify-content: center; align-items: center; font-size: 50px; }
-        .machine-body { padding: 15px; }
-        .machine-name { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
-        .machine-cost { font-size: 14px; color: #636e72; margin-bottom: 15px; }
-        
-        /* Trạng thái hoạt động */
-        .status-badge { position: absolute; top: 12px; right: 12px; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
-        .status-active { background: #2ecc71; color: white; }
-        .status-maintenance { background: #e74c3c; color: white; }
-
-        .btn-play { background: #6c5ce7; color: white; border: none; width: 100%; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .btn-play:disabled { background: #b2bec3; cursor: not-allowed; }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 </head>
-<body>
 
-    <nav>
-        <div class="logo">🧸 MÁY GẮP GẤU HOÀNG GIA</div>
-        <div class="user-info">
-            <span id="user-display" style="font-weight: 600;">Xin chào, Bro!</span>
-            <div id="coin-balance" class="coin-badge">💰 0 Xu</div>
-            <a href="history.html" style="background: #10ac84; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: 14px;">📜 Lịch sử & Đổi quà</a>
-            <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">
+            🧸 Royal Teddy Machine
+        </div>
+        <div class="nav-right">
+            <span id="user-display">
+                Xin chào
+            </span>
+            <div id="coin-balance" class="coin-box">
+                💰 0 Xu
+            </div>
+            <a href="history.html" class="btn btn-green">
+                📜 Lịch sử
+            </a>
+            <button class="btn btn-red" onclick="logout()">
+                Đăng xuất
+            </button>
         </div>
     </nav>
-
-    <div class="container">
-        <div class="recharge-section">
-            <h3>💸 Nạp Tiền Đổi Xu (Tự động tính KM Ngày lễ/Cuối tuần)</h3>
-            
-            <div style="font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #636e72;">Chọn số tiền muốn nạp:</div>
-            <div class="amount-presets">
-                <button type="button" class="preset-btn" onclick="selectPreset(20000, this)">20.000đ</button>
-                <button type="button" class="preset-btn active" onclick="selectPreset(50000, this)">50.000đ</button>
-                <button type="button" class="preset-btn" onclick="selectPreset(100000, this)">100.000đ</button>
-                <button type="button" class="preset-btn" onclick="selectPreset(200000, this)">200.000đ</button>
-            </div>
-
-            <div class="custom-amount-box">
-                <input type="number" id="recharge-amount" value="50000" placeholder="Hoặc nhập số tiền khác (VND)" min="1000" oninput="clearPresets()">
-            </div>
-
-            <div style="font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #636e72;">Chọn phương thức thanh toán:</div>
-            <div class="payment-methods">
-                <div class="method-card active" onclick="selectPayment('momo', this)">
-                    <img src="../assets/momo.png" alt="MoMo"> Ví MoMo
-                </div>
-                <div class="method-card" onclick="selectPayment('zalopay', this)">
-                    <img src="../assets/zalopay.jpg" alt="ZaloPay" style="background:#0084ff;"> ZaloPay
-                </div>
-                <div class="method-card" onclick="selectPayment('vnpay', this)">
-                    <img src="../assets/vnpay.webp" alt="VNPAY" style="object-fit: contain; background: #f1f2f6;"> VNPAY QR
-                </div>
-            </div>
-
-            <button type="button" class="btn-recharge-submit" onclick="handleRechargeNew()">Xác Nhận Thanh Toán</button>
+    <!-- HERO -->
+    <section class="hero">
+        <div>
+            <h1>
+                Chào mừng đến với
+                <br>
+                Royal Teddy Machine
+            </h1>
+            <p>
+                Chơi gắp gấu - tích điểm -
+                đổi quà cực hấp dẫn
+            </p>
         </div>
+    </section>
 
-        <h2 class="section-title">🎰 Danh Sách Máy Gắp Gấu Hiện Tại</h2>
+    <!-- THẺ SỐ DƯ -->
+    <section class="balance-card">
+        <div>
+            <h3>
+                Số dư hiện tại
+            </h3>
+            <h1 id="balance-big">
+                💰 0 Xu
+            </h1>
+        </div>
+    </section>
+
+    <!-- NẠP XU -->
+    <section class="card">
+        <h2>
+            💸 Nạp Xu
+        </h2>
+        <div class="preset-grid">
+            <button class="preset-btn"
+                onclick="selectPreset(20000,this)">
+                20.000đ
+            </button>
+            <button class="preset-btn active"
+                onclick="selectPreset(50000,this)">
+                50.000đ
+            </button>
+            <button class="preset-btn"
+                onclick="selectPreset(100000,this)">
+                100.000đ
+            </button>
+            <button class="preset-btn"
+                onclick="selectPreset(200000,this)">
+                200.000đ
+            </button>
+        </div>
+        <input
+            id="recharge-amount"
+            type="number"
+            value="50000"
+            placeholder="Nhập số tiền">
+        <h3>
+            Phương thức thanh toán
+        </h3>
+        <div class="payment-grid">
+            <div
+                class="payment-card active"
+                onclick="selectPayment('momo',this)">
+                <img src="../assets/momo.png">
+                <span>MoMo</span>
+            </div>
+            <div
+                class="payment-card"
+                onclick="selectPayment('zalopay',this)">
+                <img src="../assets/zalopay.jpg">
+                <span>ZaloPay</span>
+            </div>
+            <div
+                class="payment-card"
+                onclick="selectPayment('vnpay',this)">
+                <img src="../assets/vnpay.webp">
+                <span>VNPay</span>
+            </div>
+        </div>
+        <button
+            class="btn-main"
+            onclick="handleRechargeNew()">
+            Xác nhận thanh toán
+        </button>
+    </section>
+
+    <!-- DANH SÁCH MÁY -->
+    <section>
+        <h2 class="section-title">
+            🎰 Danh sách máy gắp
+        </h2>
         <div class="machine-grid">
             <div class="machine-card">
-                <span class="status-badge status-active">Đang Chạy</span>
-                <div class="machine-img" style="background: #ff7675;">🦊</div>
-                <div class="machine-body">
-                    <div class="machine-name">Máy Cáo Đuôi Đỏ Đáng Yêu</div>
-                    <div class="machine-cost">Giá chơi: 5 Xu / lượt</div>
-                    <button class="btn-play" onclick="playGame(1, 5, 'Máy Cáo Đuôi Đỏ')">Vào Chơi Ngay</button>
+                <span class="badge online">
+                    Đang hoạt động
+                </span>
+                <div class="machine-image">
+                    🦊
                 </div>
+                <h3>
+                    Máy Cáo Đuôi Đỏ
+                </h3>
+                <p>
+                    Giá chơi:
+                    <b>5 Xu</b>
+                </p>
+                <button
+                    class="btn-main"
+                    onclick="playGame(1,5,'Máy Cáo Đuôi Đỏ')">
+                    Vào chơi
+                </button>
             </div>
-
             <div class="machine-card">
-                <span class="status-badge status-active">Đang Chạy</span>
-                <div class="machine-img" style="background: #74b9ff;">🐻</div>
-                <div class="machine-body">
-                    <div class="machine-name">Máy Gấu Teddy Khổng Lồ</div>
-                    <div class="machine-cost">Giá chơi: 10 Xu / lượt</div>
-                    <button class="btn-play" onclick="playGame(2, 10, 'Máy Gấu Teddy')">Vào Chơi Ngay</button>
+                <span class="badge online">
+                    Đang hoạt động
+                </span>
+                <div class="machine-image">
+                    🐻
                 </div>
+                <h3>
+                    Máy Gấu Teddy
+                </h3>
+                <p>
+                    Giá chơi:
+                    <b>10 Xu</b>
+                </p>
+                <button
+                    class="btn-main"
+                    onclick="playGame(2,10,'Máy Gấu Teddy')">
+                    Vào chơi
+                </button>
             </div>
-
             <div class="machine-card">
-                <span class="status-badge status-maintenance">Bảo Trì</span>
-                <div class="machine-img" style="background: #ffeaa7;">🐱</div>
-                <div class="machine-body">
-                    <div class="machine-name">Máy Mèo Hoàng Thượng Pink</div>
-                    <div class="machine-cost">Giá chơi: 4 Xu / lượt</div>
-                    <button class="btn-play" disabled>Đang bảo trì...</button>
+                <span class="badge offline">
+                    Bảo trì
+                </span>
+                <div class="machine-image">
+                    🐱
                 </div>
+                <h3>
+                    Máy Mèo Hoàng Thượng
+                </h3>
+                <p>
+                    Giá chơi:
+                    <b>4 Xu</b>
+                </p>
+                <button
+                    class="btn-disable">
+                    Đang bảo trì
+                </button>
             </div>
         </div>
-    </div>
-
-    <script>
-        const CORE_SERVICE_URL = 'http://localhost:3000/api';
-        const userId = localStorage.getItem('user_id');
-        const token = localStorage.getItem('user_token');
-        let selectedPaymentMethod = 'momo'; 
-        
-        if (!token || !userId) {
-            alert('Bro vui lòng đăng nhập trước!');
-            window.location.href = 'login.html';
-        }
-    
-        async function loadUserDashboard() {
-            try {
-                const response = await fetch(`${CORE_SERVICE_URL}/user/balance`, {
-                    method: 'GET',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await response.json();
-
-                if (response.ok) {
-                    document.getElementById('user-display').innerText = `Xin chào, ${data.fullName}!`;
-                    document.getElementById('coin-balance').innerText = `💰 ${data.coins} Xu`;
-                } else {
-                    logout();
-                }
-            } catch (error) {
-                console.error('Không kết nối được server lấy số dư:', error);
-            }
-        }
-
-        function selectPreset(amount, element) {
-            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
-            element.classList.add('active');
-            document.getElementById('recharge-amount').value = amount;
-        }
-
-        function clearPresets() {
-            document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
-        }
-
-        function selectPayment(method, element) {
-            document.querySelectorAll('.method-card').forEach(card => card.classList.remove('active'));
-            element.classList.add('active');
-            selectedPaymentMethod = method;
-        }
-
-        async function handleRechargeNew() {
-            const amountVnd = document.getElementById('recharge-amount').value;
-            if (!amountVnd || amountVnd < 1000) {
-                alert('Vui lòng nhập số tiền hợp lệ (tối thiểu 1.000 VND)!');
-                return;
-            }
-
-            const confirmed = confirm(`Bạn có chắc chắn muốn thanh toán ${parseInt(amountVnd).toLocaleString()} VND qua Ví ${selectedPaymentMethod.toUpperCase()} không?`);
-            if (!confirmed) return;
-
-            try {
-                const response = await fetch(`${CORE_SERVICE_URL}/user/recharge`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: parseInt(userId), amountVnd: parseInt(amountVnd) })
-                });
-                const data = await response.json();
-
-                if (response.ok) {
-                    alert(`🎉 [Ví ${selectedPaymentMethod.toUpperCase()}] ${data.message}`);
-                    loadUserDashboard(); 
-                } else {
-                    alert(data.error);
-                }
-            } catch (error) {
-                alert('Có lỗi xảy ra trong quá trình kết nối cổng thanh toán!');
-            }
-        }
-
-        function logout() {
-            localStorage.clear();
-            window.location.href = 'login.html';
-        }
-
-        loadUserDashboard();
-    </script>
+    </section>
+<script src="js/index.js"></script>
 </body>
 </html>

@@ -3,162 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng Nhập - Cửa Hàng Gắp Gấu</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
-        /* Đã sửa: Đổi items-center thành align-items chuẩn CSS để căn giữa chuẩn theo chiều dọc */
-        body { 
-            background: linear-gradient(135deg, #74b9ff, #a29bfe); 
-            min-height: 100vh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            padding: 20px;
-        }
-        
-        /* Khống chế chiều cao tự co giãn theo nội dung, không bị dài vô lý */
-        .login-container { 
-            background: white; 
-            padding: 30px 35px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
-            width: 100%; 
-            max-width: 380px; 
-            text-align: center;
-            height: fit-content; 
-        }
-        
-        .login-container h2 { color: #2d3436; margin-bottom: 6px; font-size: 24px; font-weight: 700; }
-        .login-container p { color: #636e72; font-size: 13px; margin-bottom: 20px; line-height: 1.4; }
-        
-        .form-group { text-align: left; margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 13px; color: #2d3436; font-weight: 600; margin-bottom: 5px; }
-        .form-group input { width: 100%; padding: 10px 14px; border: 1px solid #dfe6e9; border-radius: 8px; font-size: 14px; transition: 0.3s; outline: none; }
-        .form-group input:focus { border-color: #6c5ce7; box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1); }
-        
-        .btn-submit { background: #6c5ce7; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 5px; transition: 0.2s; }
-        .btn-submit:hover { background: #5b4cd8; }
-        
-        .switch-mode { margin-top: 15px; font-size: 13px; color: #636e72; }
-        .switch-mode a { color: #6c5ce7; text-decoration: none; font-weight: bold; }
-        .switch-mode a:hover { text-decoration: underline; }
-        .error-msg { color: #d63031; font-size: 13px; font-weight: bold; margin-top: 10px; display: none; }
-    </style>
+    <title>Đăng nhập - Royal Teddy Machine</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
-
-<div class="login-container">
-    <h2 id="form-title">🧸 ĐĂNG NHẬP</h2>
-    <p id="form-desc">Chào mừng bro quay trở lại máy gắp gấu!</p>
-    
+<div class="background"></div>
+<div class="login-card">
+    <div class="logo">
+        🧸
+    </div>
+    <h1 id="form-title">Royal Teddy Machine</h1>
+    <p id="form-desc">
+        Chào mừng bạn quay trở lại.
+    </p>
     <form id="auth-form" onsubmit="handleAuth(event)">
-        <div class="form-group">
-            <label for="username">Tài khoản</label>
-            <input type="text" id="username" placeholder="Nhập tài khoản của nhóm..." required>
+        <div class="input-group">
+            <label>Tài khoản</label>
+            <input
+                type="text"
+                id="username"
+                placeholder="Nhập tài khoản"
+                required>
         </div>
-        
-        <div class="form-group">
-            <label for="password">Mật khẩu</label>
-            <input type="password" id="password" placeholder="••••••••" required>
+        <div class="input-group">
+            <label>Mật khẩu</label>
+            <input
+                type="password"
+                id="password"
+                placeholder="••••••••"
+                required>
         </div>
-
-        <div id="group-fullname" class="form-group" style="display: none;">
-            <label for="fullname">Họ và tên</label>
-            <input type="text" id="fullname" placeholder="Nguyễn Văn A">
+        <div
+            class="input-group"
+            id="group-fullname"
+            style="display:none;">
+            <label>Họ và tên</label>
+            <input
+                type="text"
+                id="fullname"
+                placeholder="Nguyễn Văn A">
         </div>
-        
-        <button type="submit" id="btn-text" class="btn-submit">Đăng Nhập</button>
-        <div id="error-box" class="error-msg"></div>
+        <button
+            class="btn-login"
+            id="btn-text"
+            type="submit">
+            Đăng nhập
+        </button>
+        <div
+            id="error-box"
+            class="error-box">
+        </div>
     </form>
-    
     <div class="switch-mode">
-        <span id="switch-text">Chưa có tài khoản?</span> 
-        <a href="#" id="switch-btn" onclick="toggleMode(event)">Đăng ký ngay</a>
+        <span id="switch-text">
+            Chưa có tài khoản?
+        </span>
+        <a
+            href="#"
+            id="switch-btn"
+            onclick="toggleMode(event)">
+            Đăng ký ngay
+        </a>
     </div>
 </div>
-
-<script>
-    let isLoginMode = true;
-    const CORE_SERVICE_URL = 'http://localhost:3000'; 
-
-    function toggleMode(e) {
-        e.preventDefault();
-        isLoginMode = !isLoginMode;
-        
-        const title = document.getElementById('form-title');
-        const desc = document.getElementById('form-desc');
-        const btnText = document.getElementById('btn-text');
-        const switchText = document.getElementById('switch-text');
-        const switchBtn = document.getElementById('switch-btn');
-        const groupFullname = document.getElementById('group-fullname');
-        const errorBox = document.getElementById('error-box');
-        
-        errorBox.style.display = "none";
-        
-        if (!isLoginMode) {
-            title.innerText = "📝 ĐĂNG KÝ";
-            desc.innerText = "Tạo tài khoản nhanh để tích điểm gắp gấu bro ơi!";
-            btnText.innerText = "Đăng Ký Tài Khoản";
-            switchText.innerText = "Đã có tài khoản?";
-            switchBtn.innerText = "Đăng nhập tại đây";
-            groupFullname.style.display = "block";
-            document.getElementById('fullname').required = true;
-        } else {
-            title.innerText = "🧸 ĐĂNG NHẬP";
-            desc.innerText = "Chào mừng đến với máy gắp gấu!";
-            btnText.innerText = "Đăng Nhập";
-            switchText.innerText = "Chưa có tài khoản?";
-            switchBtn.innerText = "Đăng ký ngay";
-            groupFullname.style.display = "none";
-            document.getElementById('fullname').required = false;
-        }
-    }
-
-    async function handleAuth(e) {
-        e.preventDefault();
-        const errorBox = document.getElementById('error-box');
-        errorBox.style.display = "none";
-
-        const tai_khoan = document.getElementById('username').value;
-        const mat_khau = document.getElementById('password').value;
-        
-        const endpoint = isLoginMode ? '/api/auth/login' : '/api/auth/register';
-        const bodyData = { tai_khoan, mat_khau };
-        
-        if (!isLoginMode) {
-            bodyData.ho_ten = document.getElementById('fullname').value;
-            bodyData.vai_tro = 'KhachHang'; 
-        }
-
-        try {
-            const response = await fetch(`${CORE_SERVICE_URL}${endpoint}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(bodyData)
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                if (isLoginMode) {
-                    localStorage.setItem('user_token', data.token || 'fake-token-btl');
-                    localStorage.setItem('user_id', data.userId || 1);
-                    alert('🎉 Đăng nhập thành công !');
-                    window.location.href = 'index.html'; 
-                } else {
-                    alert('🎉 Đăng ký thành công! hãy đăng nhập nhé.');
-                    toggleMode(e); 
-                }
-            } else {
-                errorBox.innerText = data.error || 'Có lỗi xảy ra, bro kiểm tra lại nha!';
-                errorBox.style.display = "block";
-            }
-        } catch (error) {
-            errorBox.innerText = '❌ Không kết nối được tới Core Service Backend!';
-            errorBox.style.display = "block";
-        }
-    }
-</script>
+<script src="js/login.js"></script>
 </body>
 </html>
