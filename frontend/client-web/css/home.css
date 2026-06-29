@@ -5,26 +5,50 @@
     margin-bottom:25px;
 }
 
-.preset-btn{
-    border:none;
+    .preset-btn{
+    border:2px solid #dcd6ff;      /* Viền giống giao diện cũ */
     padding:15px;
     border-radius:15px;
-    background:#eef2ff;
+    background:#ffffff;
     cursor:pointer;
     font-weight:600;
     font-size:15px;
+    color:#444;
     transition:.3s;
 }
 
-.preset-btn:hover{
-    background:#dbe4ff;
+.preset-btn:not(.active):hover{
+    background:linear-gradient(
+        135deg,
+        #F7C0D9,
+        #C8BEFF
+    );
+
+    border-color:#B8A9FF;
+
+    color:white;
+
     transform:translateY(-3px);
+
+    box-shadow:0 8px 20px rgba(139,92,246,.2);
 }
 
 .preset-btn.active{
-    background:#6c63ff;
-    color:white;
-    box-shadow:0 8px 20px rgba(108,99,255,.3);
+    background:linear-gradient(
+        135deg,
+        #E97FB7,
+        #8B7CFF
+    ) !important;
+
+    border:2px solid #7C69FF !important;
+
+    color:#c00000 !important;
+
+    font-weight:800;
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 25px rgba(124,105,255,.35);
 }
 
 .payment-grid{
@@ -35,27 +59,51 @@
 }
 
 .payment-card{
-    background:white;
-    border:2px solid #e5e7eb;
-    border-radius:18px;
-    padding:25px;
     display:flex;
-    flex-direction:column;
-    justify-content:center;
     align-items:center;
+    gap:15px;
+
+    padding:20px;
+
+    border:2px solid #e7dfff;
+
+    border-radius:18px;
+
+    background:#ffffff;
+
     cursor:pointer;
-    transition:.3s;
+
+    transition:all .3s ease;
 }
 
-.payment-card:hover{
-    transform:translateY(-5px);
-    border-color:#6c63ff;
-    box-shadow:0 12px 30px rgba(0,0,0,.08);
+.payment-card:not(.active):hover{
+
+    border-color:#b89cff;
+
+    background:#faf6ff;
+
+    transform:translateY(-2px);
+
+    box-shadow:0 8px 20px rgba(139,92,246,.15);
+
 }
 
 .payment-card.active{
-    border:2px solid #6c63ff;
-    background:#f4f3ff;
+
+    border:2px solid #8B5CF6 !important;
+
+    background:linear-gradient(
+        135deg,
+        #F7C0D9,
+        #C8BEFF
+    ) !important;
+
+    box-shadow:0 10px 25px rgba(124,105,255,.25);
+}
+
+.payment-card.active span{
+    color:#c00000;
+    font-weight:800;
 }
 
 .payment-card img{
@@ -80,20 +128,18 @@
 }
 
 .machine-card{
-    background:white;
-    border-radius:25px;
+    background:rgba(255,255,255,.42);
+    backdrop-filter:blur(15px);
+    border-radius:28px;
+    border:1px solid rgba(255,255,255,.35);
     overflow:hidden;
-    box-shadow:0 12px 30px rgba(0,0,0,.08);
     transition:.35s;
-    position:relative;
 }
 
 .machine-card:hover{
     transform:translateY(-4px);
-
-box-shadow:
-
-0 15px 25px rgba(139,92,246,.35);
+    box-shadow:
+    0 15px 25px rgba(139,92,246,.35);
 }
 
 .machine-image{
@@ -104,6 +150,18 @@ box-shadow:
     font-size:90px;
     background:linear-gradient(135deg,#6c63ff,#8b5cf6);
     color:white;
+}
+
+.machine-btn{
+    height:62px;
+    font-size:22px;
+    font-weight:700;
+    background:
+linear-gradient(
+135deg,
+#8D63FF,
+#A78BFA);
+transition:.35s;
 }
 
 .machine-card h3{

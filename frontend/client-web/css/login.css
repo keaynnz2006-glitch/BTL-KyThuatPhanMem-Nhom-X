@@ -3,7 +3,12 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    background:linear-gradient(135deg,#6c63ff,#8b5cf6,#3b82f6);
+    background:
+    linear-gradient(
+    135deg,
+    #dec6bd 0%,
+    #8c21b6 45%,
+    #bbb6dd 100%);
     overflow:hidden;
     position:relative;
 }
@@ -160,9 +165,7 @@ box-shadow:
 
 .logo{
    font-size:38px;
-
-font-weight:800;
-
-color:#5B4DFF;
+    font-weight:800;
+    color:#5B4DFF;
 }
 }
