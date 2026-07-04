@@ -1,10 +1,20 @@
+-- 1. Bảng quản lý thông tin chung của máy (Đã lược bỏ các trường liên kết đơn lẻ)
 CREATE TABLE IF NOT EXISTS MayGapGau (
     id INT AUTO_INCREMENT PRIMARY KEY,
     ten_may VARCHAR(100) NOT NULL,
     loai_may VARCHAR(100), -- Máy gắp mini, máy gắp khổng lồ...
     so_xu_tren_luot INT DEFAULT 2,
-    trang_thai VARCHAR(50) DEFAULT 'DangHoatDong', -- 'DangHoatDong', 'HetGau', 'BaoTri'
-    id_gau_trong_may INT,
-    so_luong_gau_hien_tai INT DEFAULT 0,
-    CONSTRAINT FK_MayGapGau_GauBong FOREIGN KEY (id_gau_trong_may) REFERENCES GauBong(id)
+    trang_thai VARCHAR(50) DEFAULT 'DangHoatDong' -- 'DangHoatDong', 'HetGau', 'BaoTri'
+);
+
+-- 2. THÊM MỚI: Bảng trung gian giải quyết bài toán "Một máy có nhiều loại gấu"
+CREATE TABLE IF NOT EXISTS GauTrongMay (
+    id_may INT NOT NULL,
+    id_gau INT NOT NULL,
+    so_luong_hien_tai INT DEFAULT 0, -- Số lượng của CON GẤU CỤ THỂ NÀY trong máy đó
+    ty_le_trung FLOAT DEFAULT 0.1,    -- Tỷ lệ quay trúng con này (Ví dụ: 0.05 = 5%, 0.7 = 70%)
+    
+    PRIMARY KEY (id_may, id_gau),
+    CONSTRAINT FK_GauTrongMay_May FOREIGN KEY (id_may) REFERENCES MayGapGau(id),
+    CONSTRAINT FK_GauTrongMay_Gau FOREIGN KEY (id_gau) REFERENCES GauBong(id)
 );

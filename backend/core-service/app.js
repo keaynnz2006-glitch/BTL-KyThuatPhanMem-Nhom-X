@@ -11,7 +11,7 @@ app.use('/api', apiRoutes);
 
 const PORT = 3000;
 if (process.env.NODE_ENV !== 'test') {
-    app.listen(PORT, () => console.log(`🚀 Core Service đang chạy mượt mà tại cổng http://localhost:${PORT}`));
+    app.listen(PORT, () => console.log(`Core Service đang chạy mượt mà tại cổng http://localhost:${PORT}`));
 }
 
 module.exports = app; // Export app ra để làm Unit Test

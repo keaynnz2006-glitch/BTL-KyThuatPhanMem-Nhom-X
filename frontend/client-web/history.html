@@ -3,43 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lịch Sử & Đổi Quà - Cửa Hàng Gắp Gấu Pro</title>
+    <title>Lịch Sử & Đổi Quà - Gắp Gấu Hoàng Gia</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #f1f2f6; color: #2d3436; }
+        body { background: #f5f6fa; color: #2d3436; }
 
         /* Navigation Bar */
         nav { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .logo { font-size: 22px; font-weight: bold; color: #6c5ce7; display: flex; align-items: center; gap: 8px; cursor: pointer; }
-        .user-info { display: flex; align-items: center; gap: 20px; }
+        .logo { font-size: 20px; font-weight: bold; color: #6c5ce7; cursor: pointer; text-decoration: none; }
+        .user-info { display: flex; align-items: center; gap: 15px; }
         .coin-badge { background: #ffeaa7; color: #d63031; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 14px; border: 1px solid #fdcb6e; }
-        .btn-nav { background: #6c5ce7; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: 14px; }
+        .btn-nav { background: #6c5ce7; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; font-size: 14px; transition: 0.2s; }
         .btn-nav:hover { background: #5b4cc4; }
 
         /* Main Container */
-        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
-
-        /* Khung nội dung */
-        .history-gift-container { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-        .dashboard-box { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        .dashboard-box h3 { margin-bottom: 20px; font-size: 18px; color: #2d3436; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .container { max-width: 1140px; margin: 40px auto; padding: 0 20px; }
+        .history-gift-container { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; }
         
-        /* Bảng lịch sử */
-        .history-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
-        .history-table th, .history-table td { padding: 12px; border-bottom: 1px solid #dfe6e9; }
-        .history-table th { background: #f8f9fa; color: #636e72; font-weight: 600; }
-        .badge-result { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; }
-        .badge-win { background: #d4edda; color: #155724; }
-        .badge-lose { background: #f8d7da; color: #721c24; }
+        @media (max-width: 768px) {
+            .history-gift-container { grid-template-columns: 1fr; }
+        }
 
-        /* Danh sách đổi quà */
-        .gift-list { display: flex; flex-direction: column; gap: 12px; }
-        .gift-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f8f9fa; border-radius: 10px; border: 1px solid #e4e7eb; }
-        .gift-info { display: flex; align-items: center; gap: 12px; }
-        .gift-icon { font-size: 24px; }
-        .gift-name { font-weight: 600; font-size: 15px; }
+        /* Dashboard Box */
+        .dashboard-box { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #ebdfff; }
+        .dashboard-box h3 { margin-bottom: 24px; font-size: 18px; color: #2d3436; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        
+        /* Table Styling */
+        .table-responsive { width: 100%; overflow-x: auto; }
+        .history-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+        .history-table th, .history-table td { padding: 14px 16px; border-bottom: 1px solid #f1f2f6; }
+        .history-table th { background: #f8f9fa; color: #636e72; font-weight: 600; border-radius: 4px; }
+        .history-table tbody tr:hover { background-color: #fafafa; }
+        
+        /* Status Badges */
+        .badge-result { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; }
+        .badge-win { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+        .badge-lose { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+
+        /* Gift List */
+        .gift-list { display: flex; flex-direction: column; gap: 15px; }
+        .gift-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: #fff; border-radius: 12px; border: 1px solid #f1f2f6; transition: 0.2s; }
+        .gift-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .gift-info { display: flex; align-items: center; gap: 15px; }
+        .gift-icon { font-size: 28px; }
+        .gift-name { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
         .gift-points { font-size: 13px; color: #ff7675; font-weight: bold; }
-        .btn-exchange { background: #10ac84; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-exchange { background: #10ac84; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-exchange:hover { background: #0ee0a4; }
     </style>
 </head>
@@ -58,36 +67,26 @@
         <div class="history-gift-container">
             <div class="dashboard-box">
                 <h3>📜 Lịch Sử Chơi Gắp Gấu</h3>
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Thời gian</th>
-                            <th>Tên Máy</th>
-                            <th>Kết quả</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>22:05 - Hôm nay</td>
-                            <td>Máy Cáo Đuôi Đỏ</td>
-                            <td><span class="badge-result badge-win">🎉 TRÚNG GẤU</span></td>
-                        </tr>
-                        <tr>
-                            <td>21:58 - Hôm nay</td>
-                            <td>Máy Gấu Teddy</td>
-                            <td><span class="badge-result badge-lose">❌ HỤT RỒI</span></td>
-                        </tr>
-                        <tr>
-                            <td>Hôm qua</td>
-                            <td>Máy Mèo Hoàng Thượng</td>
-                            <td><span class="badge-result badge-win">🎉 TRÚNG GẤU</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Thời gian</th>
+                                <th>Tên Máy Chơi</th>
+                                <th>Kết quả</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <tr>
+                                <td colspan="3" style="text-align: center; color: #636e72; padding: 30px;">Đang tải lịch sử chơi từ hệ thống...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="dashboard-box">
-                <h3>🎁 Kho Đổi Quà (Dựa trên bảng PhieuDoiQua)</h3>
+                <h3>🎁 Kho Đổi Quà</h3>
                 <div class="gift-list">
                     <div class="gift-item">
                         <div class="gift-info">
@@ -103,7 +102,7 @@
                         <div class="gift-info">
                             <span class="gift-icon">🧸</span>
                             <div>
-                                <div class="gift-name">Gấu Bông Capybara Đời Thực (Size L)</div>
+                                <div class="gift-name">Gấu Bông Capybara (Size L)</div>
                                 <div class="gift-points">Yêu cầu: Tích lũy 5 Gấu Bông</div>
                             </div>
                         </div>
@@ -116,37 +115,89 @@
 
     <script>
         const CORE_SERVICE_URL = 'http://localhost:3000/api';
-        const userId = localStorage.getItem('user_id');
         const token = localStorage.getItem('user_token');
+        const userId = localStorage.getItem('user_id');
 
+        // Kiểm tra bảo mật đầu trang
         if (!token || !userId) {
+            alert('Bro vui lòng đăng nhập trước nhé!');
             window.location.href = 'login.html';
         }
 
-        // Tự động gọi API lấy số dư đồng bộ với trang chủ
+        // Tạo cấu hình Header dùng chung cho gọn code
+        const fetchOptions = {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` }
+        };
+
+        // 1. Lấy thông tin số dư tài khoản
         async function loadUserDashboard() {
             try {
-                const response = await fetch(`${CORE_SERVICE_URL}/user/balance`, {
-                    method: 'GET',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const response = await fetch(`${CORE_SERVICE_URL}/user/balance`, fetchOptions);
                 const data = await response.json();
-
                 if (response.ok) {
                     document.getElementById('user-display').innerText = `Xin chào, ${data.fullName}!`;
                     document.getElementById('coin-balance').innerText = `💰 ${data.coins} Xu`;
                 }
-            } catch (error) {
-                console.error('Lỗi kết nối:', error);
+            } catch (err) {
+                console.error('Lỗi lấy số dư:', err);
+            }
+        }
+
+        // 2. Lấy dữ liệu lịch sử thời gian thực từ MySQL
+        async function loadPlayHistoryRealTime() {
+            const tableBody = document.getElementById('history-table-body');
+            if (!tableBody) return;
+
+            try {
+                const response = await fetch(`${CORE_SERVICE_URL}/user/history`, fetchOptions);
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+                    tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #d63031; padding: 20px;">Không thể tải dữ liệu lịch sử!</td></tr>';
+                    return;
+                }
+
+                if (data.history.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #636e72; padding: 30px;">Bro chưa chơi lượt nào cả, ra trang chủ gắp ngay đi! 🧸</td></tr>';
+                    return;
+                }
+
+                // Render dữ liệu siêu gọn bằng map và join
+                tableBody.innerHTML = data.history.map(row => {
+                    const thoiGianFormat = new Date(row.thoi_gian).toLocaleString('vi-VN', {
+                        hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit'
+                    });
+                    
+                    const tenMay = row.ten_may || `Máy gắp số #${row.id_may}`;
+                    const badgeHtml = row.id_gau_trung 
+                        ? `<span class="badge-result badge-win">🎉 TRÚNG GẤU (ID: ${row.id_gau_trung})</span>` 
+                        : `<span class="badge-result badge-lose">❌ HỤT RỒI</span>`;
+
+                    return `
+                        <tr>
+                            <td>${thoiGianFormat}</td>
+                            <td><strong>${tenMay}</strong></td>
+                            <td>${badgeHtml}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error('Lỗi kết nối lịch sử:', err);
+                tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #d63031; padding: 20px;">Mất kết nối tới máy chủ dữ liệu!</td></tr>';
             }
         }
 
         function handleExchange(giftName) {
-            alert(` Yêu cầu đổi quà [${giftName}] của bạn đã được ghi nhận thành công!
-                \nHệ thống đang tạo phiếu đổi quà (PhieuDoiQua) chờ Admin phê duyệt `);
+            alert(`Yêu cầu đổi quà [${giftName}] của bạn đã được ghi nhận!\nHệ thống đang tạo phiếu (PhieuDoiQua) chờ Admin duyệt.`);
         }
 
-        loadUserDashboard();
+        // Tự động kích hoạt khi vào trang
+        window.onload = () => {
+            loadUserDashboard();
+            loadPlayHistoryRealTime();
+        };
     </script>
 </body>
 </html>

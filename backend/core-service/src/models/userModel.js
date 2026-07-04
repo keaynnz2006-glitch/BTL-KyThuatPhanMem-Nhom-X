@@ -29,7 +29,26 @@ const UserModel = {
             [coinsToAdd, userId]
         );
         return result;
+    },
+
+    // Lưu lịch sử chơi vào MySQL
+     async savePlayHistory(id_khach_hang, id_may, id_gau_trung) {
+    // 1. Ghi nhận lượt chơi vào bảng lịch sử
+    await db.query(
+        'INSERT INTO LichSuChoi (id_khach_hang, id_may, id_gau_trung, thoi_gian) VALUES (?, ?, ?, NOW())',
+        [id_khach_hang, id_may, id_gau_trung]
+    );
+
+    if (id_gau_trung !== null) {
+        await db.query(
+            `UPDATE gautrongmay 
+             SET so_luong_hien_tai = GREATEST(0, so_luong_hien_tai - 1) 
+             WHERE id_may = ? AND id_gau = ?`,
+            [id_may, id_gau_trung]
+        );
+        console.log(`✨ [MySQL] Máy ${id_may} gắp trúng Gấu ID ${id_gau_trung} -> Đã trừ kho thật dưới DB!`);
     }
+}
 };
 
 module.exports = UserModel;

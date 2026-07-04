@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng Nhập - Cửa Hàng Gắp Gấu</title>
+    <title>Đăng Nhập - Cửa Hàng Gacha Gấu Bông</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        /* Đã sửa: Đổi items-center thành align-items chuẩn CSS để căn giữa chuẩn theo chiều dọc */
         body { 
             background: linear-gradient(135deg, #74b9ff, #a29bfe); 
             min-height: 100vh; 
@@ -17,7 +16,6 @@
             padding: 20px;
         }
         
-        /* Khống chế chiều cao tự co giãn theo nội dung, không bị dài vô lý */
         .login-container { 
             background: white; 
             padding: 30px 35px; 
@@ -50,12 +48,12 @@
 
 <div class="login-container">
     <h2 id="form-title">🧸 ĐĂNG NHẬP</h2>
-    <p id="form-desc">Chào mừng bro quay trở lại máy gắp gấu!</p>
+    <p id="form-desc">Chào mừng quay trở lại hệ thống Gacha Gấu Bông!</p>
     
     <form id="auth-form" onsubmit="handleAuth(event)">
         <div class="form-group">
             <label for="username">Tài khoản</label>
-            <input type="text" id="username" placeholder="Nhập tài khoản của nhóm..." required>
+            <input type="text" id="username" placeholder="Nhập tài khoản của ông..." required>
         </div>
         
         <div class="form-group">
@@ -75,7 +73,7 @@
     <div class="switch-mode">
         <span id="switch-text">Chưa có tài khoản?</span> 
         <a href="#" id="switch-btn" onclick="toggleMode(event)">Đăng ký ngay</a>
-    </div>
+    }
 </div>
 
 <script>
@@ -98,7 +96,7 @@
         
         if (!isLoginMode) {
             title.innerText = "📝 ĐĂNG KÝ";
-            desc.innerText = "Tạo tài khoản nhanh để tích điểm gắp gấu bro ơi!";
+            desc.innerText = "Tạo tài khoản nhanh để tích điểm quay Gacha đổi quà to bro ơi!";
             btnText.innerText = "Đăng Ký Tài Khoản";
             switchText.innerText = "Đã có tài khoản?";
             switchBtn.innerText = "Đăng nhập tại đây";
@@ -106,7 +104,7 @@
             document.getElementById('fullname').required = true;
         } else {
             title.innerText = "🧸 ĐĂNG NHẬP";
-            desc.innerText = "Chào mừng đến với máy gắp gấu!";
+            desc.innerText = "Chào mừng đến với hệ thống Gacha Gấu Bông!";
             btnText.innerText = "Đăng Nhập";
             switchText.innerText = "Chưa có tài khoản?";
             switchBtn.innerText = "Đăng ký ngay";
@@ -142,16 +140,19 @@
 
             if (response.ok) {
                 if (isLoginMode) {
+                   
                     localStorage.setItem('user_token', data.token || 'fake-token-btl');
                     localStorage.setItem('user_id', data.userId || 1);
-                    alert('🎉 Đăng nhập thành công !');
+                    localStorage.setItem('user_role', data.vai_tro || 'KhachHang'); 
+                    
+                    alert('🎉 Đăng nhập thành công!');
                     window.location.href = 'index.html'; 
                 } else {
-                    alert('🎉 Đăng ký thành công! hãy đăng nhập nhé.');
+                    alert('🎉 Đăng ký thành công! Hãy tiến hành đăng nhập nhé bro.');
                     toggleMode(e); 
                 }
             } else {
-                errorBox.innerText = data.error || 'Có lỗi xảy ra, bro kiểm tra lại nha!';
+                errorBox.innerText = data.error || 'Có lỗi xảy ra, kiểm tra lại nha!';
                 errorBox.style.display = "block";
             }
         } catch (error) {
