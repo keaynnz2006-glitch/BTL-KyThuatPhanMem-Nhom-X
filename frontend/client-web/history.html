@@ -28,6 +28,11 @@
         .dashboard-box { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #ebdfff; }
         .dashboard-box h3 { margin-bottom: 24px; font-size: 18px; color: #2d3436; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         
+        /* 🔥 Hộp hiển thị Tổng Điểm Tích Lũy */
+        .score-alert { background: #e0f7fa; border: 1px solid #b2ebf2; padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
+        .score-title { font-size: 15px; font-weight: 600; color: #006064; }
+        .score-number { font-size: 24px; color: #00838f; font-weight: 800; }
+
         /* Table Styling */
         .table-responsive { width: 100%; overflow-x: auto; }
         .history-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
@@ -67,6 +72,12 @@
         <div class="history-gift-container">
             <div class="dashboard-box">
                 <h3>📜 Lịch Sử Chơi Gắp Gấu</h3>
+
+                <div class="score-alert">
+                    <span class="score-title">🏆 Tổng điểm đổi quà tích lũy hiện có:</span>
+                    <span class="score-number" id="total-exchange-points">0 điểm</span>
+                </div>
+
                 <div class="table-responsive">
                     <table class="history-table">
                         <thead>
@@ -74,11 +85,11 @@
                                 <th>Thời gian</th>
                                 <th>Tên Máy Chơi</th>
                                 <th>Kết quả</th>
-                            </tr>
+                                <th>Điểm Nhận</th> </tr>
                         </thead>
                         <tbody id="history-table-body">
                             <tr>
-                                <td colspan="3" style="text-align: center; color: #636e72; padding: 30px;">Đang tải lịch sử chơi từ hệ thống...</td>
+                                <td colspan="4" style="text-align: center; color: #636e72; padding: 30px;">Đang tải lịch sử chơi từ hệ thống...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -93,20 +104,20 @@
                             <span class="gift-icon">🍹</span>
                             <div>
                                 <div class="gift-name">Voucher Trà Sữa TocoToco Free</div>
-                                <div class="gift-points">Yêu cầu: Tích lũy 2 Gấu Bông</div>
+                                <div class="gift-points">Yêu cầu: Tích lũy 2 điểm</div>
                             </div>
                         </div>
-                        <button class="btn-exchange" onclick="handleExchange('Voucher Trà Sữa')">Đổi Quà</button>
+                        <button class="btn-exchange" onclick="handleExchange('Voucher Trà Sữa', 2)">Đổi Quà</button>
                     </div>
                     <div class="gift-item">
                         <div class="gift-info">
                             <span class="gift-icon">🧸</span>
                             <div>
                                 <div class="gift-name">Gấu Bông Capybara (Size L)</div>
-                                <div class="gift-points">Yêu cầu: Tích lũy 5 Gấu Bông</div>
+                                <div class="gift-points">Yêu cầu: Tích lũy 5 điểm</div>
                             </div>
                         </div>
-                        <button class="btn-exchange" onclick="handleExchange('Gấu Bông Capybara')">Đổi Quà</button>
+                        <button class="btn-exchange" onclick="handleExchange('Gấu Bông Capybara', 5)">Đổi Quà</button>
                     </div>
                 </div>
             </div>
@@ -124,7 +135,6 @@
             window.location.href = 'login.html';
         }
 
-        // Tạo cấu hình Header dùng chung cho gọn code
         const fetchOptions = {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
@@ -147,6 +157,7 @@
         // 2. Lấy dữ liệu lịch sử thời gian thực từ MySQL
         async function loadPlayHistoryRealTime() {
             const tableBody = document.getElementById('history-table-body');
+            const totalPointsDisplay = document.getElementById('total-exchange-points'); // ID hộp hiển thị điểm dồn
             if (!tableBody) return;
 
             try {
@@ -154,24 +165,33 @@
                 const data = await response.json();
 
                 if (!response.ok || !data.success) {
-                    tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #d63031; padding: 20px;">Không thể tải dữ liệu lịch sử!</td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #d63031; padding: 20px;">Không thể tải dữ liệu lịch sử!</td></tr>';
                     return;
                 }
 
                 if (data.history.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #636e72; padding: 30px;">Bro chưa chơi lượt nào cả, ra trang chủ gắp ngay đi! 🧸</td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #636e72; padding: 30px;">Bro chưa chơi lượt nào cả, ra trang chủ gắp ngay đi! 🧸</td></tr>';
+                    if (totalPointsDisplay) totalPointsDisplay.innerText = '0 điểm';
                     return;
                 }
 
-                // Render dữ liệu siêu gọn bằng map và join
+                let totalAccumulatedPoints = 0; // 🔥 Biến tính tổng điểm tích lũy của khách hàng
+
+                // Render dữ liệu lịch sử bằng map và join
                 tableBody.innerHTML = data.history.map(row => {
                     const thoiGianFormat = new Date(row.thoi_gian).toLocaleString('vi-VN', {
                         hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit'
                     });
                     
                     const tenMay = row.ten_may || `Máy gắp số #${row.id_may}`;
-                    const badgeHtml = row.id_gau_trung 
-                        ? `<span class="badge-result badge-win">🎉 TRÚNG GẤU (ID: ${row.id_gau_trung})</span>` 
+                    const isWin = row.id_gau_trung !== null;
+                    
+                    // 🔥 Lấy gia_tri_diem từ DB. Nếu thắng cộng điểm của gấu bông, hụt tính bằng 0
+                    const currentPoints = isWin ? parseInt(row.gia_tri_diem || 0) : 0;
+                    totalAccumulatedPoints += currentPoints;
+
+                    const badgeHtml = isWin 
+                        ? `<span class="badge-result badge-win">🎉 TRÚNG: ${row.ten_gau || `Gấu ID ${row.id_gau_trung}`}</span>` 
                         : `<span class="badge-result badge-lose">❌ HỤT RỒI</span>`;
 
                     return `
@@ -179,18 +199,35 @@
                             <td>${thoiGianFormat}</td>
                             <td><strong>${tenMay}</strong></td>
                             <td>${badgeHtml}</td>
+                            <td style="font-weight: bold; color: ${isWin ? '#2e7d32' : '#b2bec3'};">
+                                ${isWin ? `+${currentPoints} điểm` : '0'}
+                            </td>
                         </tr>
                     `;
                 }).join('');
 
+                // 🔥 Đẩy tổng số điểm tích lũy dồn được lên Hộp thông báo phía trên bảng
+                if (totalPointsDisplay) {
+                    totalPointsDisplay.innerText = `${totalAccumulatedPoints} điểm`;
+                }
+
             } catch (err) {
                 console.error('Lỗi kết nối lịch sử:', err);
-                tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #d63031; padding: 20px;">Mất kết nối tới máy chủ dữ liệu!</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #d63031; padding: 20px;">Mất kết nối tới máy chủ dữ liệu!</td></tr>';
             }
         }
 
-        function handleExchange(giftName) {
-            alert(`Yêu cầu đổi quà [${giftName}] của bạn đã được ghi nhận!\nHệ thống đang tạo phiếu (PhieuDoiQua) chờ Admin duyệt.`);
+        // 🔥 Chức năng Đổi Quà có check điểm thực tế
+        function handleExchange(giftName, requiredPoints) {
+            const currentPointsText = document.getElementById('total-exchange-points').innerText;
+            const currentPoints = parseInt(currentPointsText) || 0;
+
+            if (currentPoints < requiredPoints) {
+                alert(`Không đủ điểm bro ơi!\nQuà này cần [${requiredPoints} điểm], bro hiện tại mới tích lũy được [${currentPoints} điểm]. Đi gắp thêm gấu nhé! 💪`);
+                return;
+            }
+
+            alert(`Chúc mừng bro! Yêu cầu đổi quà [${giftName}] thành công.\nHệ thống đang tạo phiếu (PhieuDoiQua) chờ Admin duyệt! 🎁`);
         }
 
         // Tự động kích hoạt khi vào trang

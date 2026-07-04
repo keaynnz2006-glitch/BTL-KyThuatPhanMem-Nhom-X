@@ -106,7 +106,8 @@ exports.createHistory = async (req, res) => {
 };
 
 // ==========================================
-// 5. LẤY DANH SÁCH LỊCH SỬ CHƠI (Frontend history.html gọi lên)
+/// ==========================================
+// 5. LẤY DANH SÁCH LỊCH SỬ CHƠI CHUẨN ĐÉT THEO ERD THẬT
 // ==========================================
 exports.getPlayHistory = async (req, res) => {
     const authHeader = req.headers['authorization'];
@@ -116,9 +117,18 @@ exports.getPlayHistory = async (req, res) => {
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
         
-        // Câu lệnh SQL lấy dữ liệu lịch sử chơi thực tế từ MySQL
+        // 
         const [rows] = await db.query(
-            'SELECT id_may, id_gau_trung, thoi_gian FROM LichSuChoi WHERE id_khach_hang = ? ORDER BY thoi_gian DESC',
+            `SELECT 
+                l.id_may, 
+                l.id_gau_trung, 
+                l.thoi_gian,
+                g.ten_gau,
+                COALESCE(g.gia_tri_diem, 0) as gia_tri_diem
+             FROM lichsuchoi l
+             LEFT JOIN gaubong g ON l.id_gau_trung = g.id
+             WHERE l.id_khach_hang = ? 
+             ORDER BY l.thoi_gian DESC`,
             [decoded.id]
         );
 
@@ -127,7 +137,7 @@ exports.getPlayHistory = async (req, res) => {
             history: rows 
         });
     } catch (error) {
-        console.error("Lỗi lấy lịch sử chơi từ MySQL:", error);
+        console.error("❌ Lỗi lấy lịch sử chơi từ MySQL:", error);
         return res.status(500).json({ success: false, message: 'Lỗi hệ thống không lấy được lịch sử!' });
     }
 };
