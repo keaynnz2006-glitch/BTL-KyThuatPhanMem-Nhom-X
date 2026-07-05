@@ -8,7 +8,7 @@ if (!token || role !== 'NhanVien') {
     window.location.href = '../login.html';
 }
 
-// 1. TẢI DANH SÁCH PHIẾU LÊN BẢNG GIAO DIỆN
+// 1. TẢI DANH SÁCH PHIẾU LÊN BẢNG GIAO DIỆN (Giữ nguyên của bro)
 async function fetchExchangeTickets() {
     try {
         const response = await fetch(`${CORE_SERVICE_URL}/api/staff/tickets`, {
@@ -55,7 +55,7 @@ async function fetchExchangeTickets() {
     }
 }
 
-// 2. HÀM XỬ LÝ KHI BẤM DUYỆT PHIẾU
+// 2. HÀM XỬ LÝ KHI BẤM DUYỆT PHIẾU (Giữ nguyên của bro)
 async function approveTicket(ticketId) {
     if (!confirm(`Bro có chắc chắn xác nhận đã giao quà cho phiếu #${ticketId} không?`)) return;
     try {
@@ -72,14 +72,14 @@ async function approveTicket(ticketId) {
             alert('🎉 Duyệt phiếu thành công!');
             fetchExchangeTickets(); 
         } else {
-            alert('❌ Lỗi: ' + data.message); // Hiện thông báo chặn nếu khách bị hết điểm thực tế
+            alert('❌ Lỗi: ' + data.message); // Hiện thông báo chặn nếu khách bị hết điểm thực tế hoặc máy hết gấu
         }
     } catch (error) {
         alert('❌ Lỗi kết nối server!');
     }
 }
 
-// 3. HÀM XỬ LÝ KHI BẤM HỦY PHIẾU
+// 3. HÀM XỬ LÝ KHI BẤM HỦY PHIẾU (Giữ nguyên của bro)
 async function rejectTicket(ticketId) {
     if (!confirm(`Bro có chắc chắn muốn HỦY và XÓA hẳn phiếu #${ticketId} này không?`)) return;
     try {
@@ -102,10 +102,86 @@ async function rejectTicket(ticketId) {
     }
 }
 
+// ====================================================================
+// 🔥 THÊM MỚI: CÁC HÀM LOGIC XỬ LÝ NẠP GẤU VÀO MÁY CHO NHÂN VIÊN
+// ====================================================================
+
+// 4. Tự động tải danh sách Máy và Gấu đổ vào các ô <select> khi nhân viên mở trang
+async function initReplenishForm() {
+    try {
+        // Tải danh sách các máy gắp
+        const resMachines = await fetch(`${CORE_SERVICE_URL}/api/staff/machines`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const dataMachines = await resMachines.json();
+        if (resMachines.ok && dataMachines.success) {
+            const selectMachine = document.getElementById('select-machine');
+            if (selectMachine) {
+                selectMachine.innerHTML = '<option value="">-- Chọn máy cần nạp --</option>';
+                dataMachines.machines.forEach(m => {
+                    selectMachine.innerHTML += `<option value="${m.id}">${m.ten_may} (ID: ${m.id})</option>`;
+                });
+            }
+        }
+
+        // Tải danh sách tất cả các loại gấu
+        const resBears = await fetch(`${CORE_SERVICE_URL}/api/staff/bears`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const dataBears = await resBears.json();
+        if (resBears.ok && dataBears.success) {
+            const selectBear = document.getElementById('select-bear');
+            if (selectBear) {
+                selectBear.innerHTML = '<option value="">-- Chọn gấu bông --</option>';
+                dataBears.bears.forEach(b => {
+                    selectBear.innerHTML += `<option value="${b.id}">${b.ten_gau}</option>`;
+                });
+            }
+        }
+    } catch (error) {
+        console.error('❌ Lỗi khởi tạo dữ liệu form nạp gấu:', error);
+    }
+}
+
+// 5. Đón sự kiện khi nhân viên ấn nút "XÁC NHẬN NẠP" trên Form
+document.getElementById('replenish-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Chặn hành vi load lại trang mặc định
+
+    const idMay = document.getElementById('select-machine').value;
+    const idGau = document.getElementById('select-bear').value;
+    const soLuongThem = document.getElementById('input-quantity').value;
+
+    try {
+        const response = await fetch(`${CORE_SERVICE_URL}/api/staff/bears/replenish`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id_may: idMay, id_gau: idGau, so_luong_them: soLuongThem })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            alert(data.message);
+            document.getElementById('input-quantity').value = ''; // Reset rỗng ô số lượng để tiện nhập lần sau
+        } else {
+            alert('❌ Lỗi: ' + data.message);
+        }
+    } catch (error) {
+        alert('❌ Lỗi kết nối server khi nạp gấu!');
+    }
+});
+
 function handleLogout() {
     localStorage.clear();
     window.location.href = '../login.html';
 }
 
+// Chạy khởi tạo danh sách phiếu và danh sách lựa chọn của form nạp gấu
 fetchExchangeTickets();
-setInterval(fetchExchangeTickets, 3000); // Quét lại danh sách sau mỗi 3 giây
+initReplenishForm();
+
+// Quét định kỳ lại danh sách phiếu đổi quà sau mỗi 3 giây
+setInterval(fetchExchangeTickets, 3000);

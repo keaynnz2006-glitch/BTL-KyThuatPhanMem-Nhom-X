@@ -12,6 +12,7 @@ exports.getAllTickets = async (req, res) => {
     }
 };
 
+// 2. Nhân viên bấm duyệt phiếu đổi quà - FIX CHỐNG ÂM ĐIỂM + TỰ ĐỘNG CHECK & TRỪ SỐ LƯỢNG TRONG MÁY
 exports.approveTicket = async (req, res) => {
   
     const ticketId = req.params.id; 
@@ -32,7 +33,32 @@ exports.approveTicket = async (req, res) => {
         }
 
         const idKhachHang = ticket.id_khach_hang;
+        const idGauMuonDoi = ticket.id_gau_muon_doi; 
         const soDiemPhieuNay = parseInt(ticket.so_diem_tieu_hao || 0);
+
+        // 🛑 BƯỚC THÊM MỚI (Dựa theo đúng ERD): Tự động tìm máy gắp nào đang chứa loại gấu này và còn hàng (> 0)
+        const [machineBearRows] = await db.query(
+            `SELECT id_may, so_luong_hien_tai 
+             FROM gautrongmay 
+             WHERE id_gau = ? AND so_luong_hien_tai > 0 
+             ORDER BY so_luong_hien_tai DESC 
+             LIMIT 1`, 
+            [idGauMuonDoi]
+        );
+
+        // Nếu tất cả các máy đều hết loại gấu này rồi -> Chặn không cho duyệt
+        if (machineBearRows.length === 0) {
+            const [bearInfo] = await db.query('SELECT ten_gau FROM gaubong WHERE id = ?', [idGauMuonDoi]);
+            const tenGau = bearInfo[0]?.ten_gau || 'Gấu bông';
+            return res.status(400).json({ 
+                success: false, 
+                message: `❌ Không thể duyệt! Loại gấu [${tenGau}] ở tất cả các máy gắp đã hết sạch, vui lòng nạp thêm gấu vào máy!` 
+            });
+        }
+        
+        // Xác định máy mục tiêu để chuẩn bị trừ kho
+        const targetMachine = machineBearRows[0];
+        const idMayCanTru = targetMachine.id_may;
 
         // 🔥 CHECK ĐIỂM THỰC TẾ TRƯỚC KHI CHO PHÉP UPDATE APPROVE
         // 1. Tổng điểm gắp trúng của khách
@@ -65,9 +91,25 @@ exports.approveTicket = async (req, res) => {
             });
         }
 
+        // ====================================================================
+        // ĐỦ ĐIỂM + CÒN GẤU TRONG MÁY -> TIẾN HÀNH DUYỆT VÀ TỰ ĐỘNG TRỪ SỐ LƯỢNG MÁY
+        // ====================================================================
+
         // Hợp lệ -> Gọi model cập nhật id_nhan_vien_duyet vào database (Giữ nguyên của bro)
         await StaffModel.updateApprove(ticketId, finalStaffId);
-        return res.status(200).json({ success: true, message: 'Duyệt cấp quà thành công!' });
+
+        // 🔥 CẬP NHẬT TRỪ SỐ LƯỢNG: Trừ bớt 1 gấu ở cột so_luong_hien_tai trong bảng gautrongmay
+        await db.query(
+            `UPDATE gautrongmay 
+             SET so_luong_hien_tai = so_luong_hien_tai - 1 
+             WHERE id_may = ? AND id_gau = ?`, 
+            [idMayCanTru, idGauMuonDoi]
+        );
+
+        return res.status(200).json({ 
+            success: true, 
+            message: `🎉 Duyệt cấp quà thành công! Đã tự động trừ 1 gấu tại Máy số #${idMayCanTru}.` 
+        });
 
     } catch (error) {
         console.error("❌ Lỗi cập nhật duyệt phiếu:", error);
@@ -75,7 +117,7 @@ exports.approveTicket = async (req, res) => {
     }
 };
 
-// 3. Nhân viên bấm hủy phiếu (Xóa hẳn khỏi DB)
+// 3. Nhân viên bấm hủy phiếu (Xóa hẳn khỏi DB) (Giữ nguyên của bro)
 exports.rejectTicket = async (req, res) => {
     const ticketId = req.params.id; // Thống nhất dùng .id giống hàm approve của bro nhé
 
@@ -94,5 +136,102 @@ exports.rejectTicket = async (req, res) => {
     } catch (error) {
         console.error("❌ Lỗi khi hủy phiếu:", error);
         return res.status(500).json({ success: false, message: 'Lỗi hệ thống khi hủy phiếu!' });
+    }
+};
+
+// ====================================================================
+// 🔥 CÁC HÀM PHỤC VỤ TÍNH NĂNG THÊM/NẠP GẤU VÀO MÁY Ở TRANG NHÂN VIÊN
+// ====================================================================
+
+// 4. Lấy danh sách máy hoạt động đổ vào <select> ở giao diện
+exports.getAllMachines = async (req, res) => {
+    try {
+        const [machines] = await db.query('SELECT id, ten_may FROM maygapgau WHERE trang_thai = "Hoạt động"');
+        return res.status(200).json({ success: true, machines });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// 5. Lấy danh sách tất cả loại gấu đổ vào <select> ở giao diện
+exports.getAllBears = async (req, res) => {
+    try {
+        const [bears] = await db.query('SELECT id, ten_gau FROM gaubong');
+        return res.status(200).json({ success: true, bears });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// 6. Xử lý nạp gấu vào máy gắp (Cập nhật hoặc cộng dồn vào bảng gautrongmay)
+// 6. Xử lý nạp gấu vào máy gắp (Tự động CỘNG DỒN vào máy và TRỪ KHO TỔNG)
+// 6. Xử lý nạp gấu vào máy gắp (Tự động CỘNG DỒN vào máy và TRỪ KHO TỔNG) - ĐÃ FIX HẾT LỖI BIẾN
+exports.replenishBearToMachine = async (req, res) => {
+    const { id_may, id_gau, so_luong_them } = req.body;
+    const qty = parseInt(so_luong_them);
+
+    if (!id_may || !id_gau || !qty || qty <= 0) {
+        return res.status(400).json({ success: false, message: 'Vui lòng điền đầy đủ và hợp lệ các thông tin bro ơi!' });
+    }
+
+    // Lấy kết nối để chạy Transaction giúp đồng bộ dữ liệu an toàn
+    const connection = await db.getConnection();
+
+    try {
+        // Bắt đầu Transaction
+        await connection.beginTransaction();
+
+        // BƯỚC 1: Sử dụng đúng biến id_gau để kiểm tra kho tổng (bảng gaubong)
+        const [bearStock] = await connection.query(
+            'SELECT so_luong_kho, ten_gau FROM gaubong WHERE id = ?',
+            [id_gau]
+        );
+
+        if (bearStock.length === 0) {
+            await connection.rollback();
+            return res.status(404).json({ success: false, message: 'Không tìm thấy loại quà này trong kho tổng!' });
+        }
+
+        const currentStock = parseInt(bearStock[0].so_luong_kho || 0);
+        const tenGau = bearStock[0].ten_gau;
+
+        if (currentStock < qty) {
+            await connection.rollback();
+            return res.status(400).json({ 
+                success: false, 
+                message: `❌ Kho tổng chỉ còn [${currentStock} con ${tenGau}]. Không đủ số lượng để nạp ${qty} con vào máy!` 
+            });
+        }
+
+        // BƯỚC 2: Cập nhật trừ số lượng ở kho tổng (bảng gaubong)
+        await connection.query(
+            'UPDATE gaubong SET so_luong_kho = so_luong_kho - ? WHERE id = ?',
+            [qty, id_gau]
+        );
+
+        // BƯỚC 3: Nạp gấu vào máy (Cập nhật hoặc thêm mới dòng trong bảng gautrongmay)
+        const queryReplenish = `
+            INSERT INTO gautrongmay (id_may, id_gau, so_luong_hien_tai, ty_le_trung)
+            VALUES (?, ?, ?, 0.3)
+            ON DUPLICATE KEY UPDATE so_luong_hien_tai = so_luong_hien_tai + ?
+        `;
+        await connection.query(queryReplenish, [id_may, id_gau, qty, qty]);
+
+        // Hoàn tất lưu mọi thay đổi vào Database nếu thông tin hợp lệ
+        await connection.commit();
+
+        return res.status(200).json({ 
+            success: true, 
+            message: `🎉 Thành công! Đã nạp ${qty} con [${tenGau}] vào Máy #${id_may} và trừ ${qty} con ở kho tổng.` 
+        });
+
+    } catch (error) {
+        // Nếu có bất kỳ lỗi gì xảy ra, hủy bỏ toàn bộ lệnh SQL để tránh lệch kho
+        await connection.rollback();
+        console.error("❌ Lỗi nạp gấu vào máy:", error.message);
+        return res.status(500).json({ success: false, message: 'Lỗi hệ thống, không thể nạp gấu vào máy!' });
+    } finally {
+        // Giải phóng kết nối trả về cho pool
+        connection.release();
     }
 };

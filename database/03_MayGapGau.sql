@@ -7,12 +7,12 @@ CREATE TABLE IF NOT EXISTS MayGapGau (
     trang_thai VARCHAR(50) DEFAULT 'DangHoatDong' -- 'DangHoatDong', 'HetGau', 'BaoTri'
 );
 
--- 2. THÊM MỚI: Bảng trung gian giải quyết bài toán "Một máy có nhiều loại gấu"
+
 CREATE TABLE IF NOT EXISTS GauTrongMay (
     id_may INT NOT NULL,
     id_gau INT NOT NULL,
-    so_luong_hien_tai INT DEFAULT 0, -- Số lượng của CON GẤU CỤ THỂ NÀY trong máy đó
-    ty_le_trung FLOAT DEFAULT 0.1,    -- Tỷ lệ quay trúng con này (Ví dụ: 0.05 = 5%, 0.7 = 70%)
+    so_luong_hien_tai INT DEFAULT 0,
+    ty_le_trung FLOAT DEFAULT 0.1,    
     
     PRIMARY KEY (id_may, id_gau),
     CONSTRAINT FK_GauTrongMay_May FOREIGN KEY (id_may) REFERENCES MayGapGau(id),
