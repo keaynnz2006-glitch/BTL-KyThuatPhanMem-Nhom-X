@@ -92,60 +92,53 @@ async function handleRechargeNew() {
 
 
 // 5. LOGIC RENDER DANH SÁCH MÁY GẮP GẤU ĐỘNG
+// 5. LOGIC RENDER DANH SÁCH MÁY GẮP GẤU ĐỘNG
 async function loadMachines() {
-    const machineGrid = document.querySelector('.machine-grid');
-    if (!machineGrid) return; // Nếu không ở trang chủ thì bỏ qua
+    const machineGrid = document.getElementById('machine-container') || document.getElementById('machine-grid') || document.querySelector('.machine-grid');
+    if (!machineGrid) return;
 
     try {
-        const response = await fetch(`${OPERATION_SERVICE_URL}/machines`, {
+        // 🎯 ĐỔI TỪ CỔNG 3000 SANG CỔNG 3001 ĐỂ LẤY MẢNG RAM
+        const response = await fetch('http://localhost:3001/api/machines', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const responseData = await response.json(); 
 
-        if (!response.ok || !responseData.success) {
-            machineGrid.innerHTML = `<p style="color: red; padding: 20px;">Không thể tải danh sách máy: ${responseData.message || 'Lỗi hệ thống'}</p>`;
-            return;
-        }
+        // Sửa lại theo cấu trúc dữ liệu con 3001 trả về (ví dụ data: dsMayGap hoặc responseData.data)
+        const quantitiesList = responseData.success ? (responseData.data || responseData.machines) : []; 
+        machineGrid.innerHTML = ''; 
 
-        const machinesList = responseData.data || [];
-        machineGrid.innerHTML = '';
-
-        machinesList.forEach(machine => {
-            const isLocked = machine.trangThai === 'Sự cố' || machine.trangThai === 'Hết gấu';
-            
-            let statusClass = 'status-active';
-            let statusText = 'Đang Chạy';
-            let btnText = 'Vào Chơi Ngay';
+        quantitiesList.forEach(item => {
+            let machineName = item.name; // Đọc trực tiếp từ object MayGapGauSubject
+            let icon = '🧸';
             let bgColors = '#74b9ff';
+            let coinsPerPlay = parseInt(item.coinsPerPlay); // Đọc từ mảng RAM con 3001
+            let tongSoLuong = item.currentToys; // Đọc từ mảng RAM con 3001
 
-            if (machine.trangThai === 'Sự cố') {
-                statusClass = 'status-maintenance';
-                statusText = 'Sự Cố';
-                btnText = 'Máy lỗi phần cứng...';
-                bgColors = '#ff7675';
-            } else if (machine.trangThai === 'Hết gấu') {
-                statusClass = 'status-maintenance';
-                statusText = 'Hết Gấu';
-                btnText = 'Chờ nạp thêm gấu...';
+            if (item.id === 1) {
+                icon = '🧸';
+                bgColors = '#74b9ff';
+            } else if (item.id === 2) {
+                icon = '🐱';
                 bgColors = '#ffeaa7';
+            } else {
+                icon = '🦊'; // Icon cho máy cáo hoặc máy Pro
+                bgColors = '#ffbe76';
             }
 
-            let icon = '🧸';
-            if (machine.name && machine.name.toLowerCase().includes('cáo')) icon = '🦊';
-            if (machine.name && machine.name.toLowerCase().includes('mèo')) icon = '🐱';
-
             const cardHtml = `
-                <div class="machine-card">
-                    <span class="status-badge ${statusClass}">${statusText}</span>
-                    <div class="machine-img" style="background: ${bgColors};">${icon}</div>
+                <div class="machine-card" style="border: 1px solid #ddd; padding: 20px; border-radius: 12px; min-width: 240px; background: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.05); text-align: center; display: inline-block; margin: 10px; vertical-align: top;">
+                    <span class="status-badge" style="padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; color: #fff; background: ${item.trangThai === 'Active' ? '#20bf6b' : '#ff4d4d'};">${item.trangThai}</span>
+                    <div class="machine-img" style="background: ${bgColors}; width: 70px; height: 70px; line-height: 70px; border-radius: 50%; font-size: 36px; margin: 15px auto 10px auto;">${icon}</div>
                     <div class="machine-body">
-                        <div class="machine-name">${machine.name || 'Máy Gắp Gấu Pro'}</div>
-                        <div class="machine-cost">Giá chơi: ${machine.coinsPerPlay || 5} Xu / lượt</div>
+                        <div class="machine-name" style="font-weight: bold; font-size: 18px; margin-bottom: 8px; color: #333;">${machineName}</div>
+                        <div class="machine-cost" style="color: #666; font-size: 14px; margin-bottom: 5px;">Giá chơi: <span style="color: #ff4d4d; font-weight: bold;">${coinsPerPlay} Xu</span> / lượt</div>
+                        <div class="machine-toys" style="color: #888; font-size: 13px; margin-bottom: 15px;">Số lượng: <strong>${tongSoLuong} con</strong></div>
                         <button class="btn-play" 
-                                ${isLocked ? 'disabled' : ''} 
-                                onclick="playGame(${machine.id}, ${machine.coinsPerPlay || 5}, '${machine.name || 'Máy'}')">
-                            ${btnText}
+                                style="width: 100%; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; background: #6c5ce7; color: #fff;"
+                                onclick="playGame(${item.id}, ${coinsPerPlay}, '${machineName}')">
+                            Vào Chơi Ngay
                         </button>
                     </div>
                 </div>
@@ -155,10 +148,9 @@ async function loadMachines() {
 
     } catch (error) {
         console.error('Lỗi kết nối API lấy danh sách máy:', error);
-        machineGrid.innerHTML = '<p style="color: red; font-weight: bold; padding: 20px;">❌ Không kết nối được tới Service vận hành máy!</p>';
+        machineGrid.innerHTML = '<p style="color: red; font-weight: bold; padding: 20px;">❌ Không kết nối được tới Service quản lý máy 3001!</p>';
     }
 }
-
 
 // 6. LOGIC GỬI LƯỢT CHƠI (GẮP GẤU REAL-TIME & LƯU LỊCH SỬ)
 async function playGame(machineId, cost, machineName) {

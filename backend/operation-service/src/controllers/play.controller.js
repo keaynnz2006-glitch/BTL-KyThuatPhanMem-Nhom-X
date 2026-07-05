@@ -7,6 +7,7 @@ exports.playTurn = async (req, res) => {
     const token = req.headers['authorization']; 
     if (!token) return res.status(401).json({ success: false, message: "Thiếu token xác thực người dùng!" });
 
+  
     const machine = dsMayGap.find(m => m.id === parseInt(machineId));
     if (!machine) return res.status(404).json({ success: false, message: "Không tìm thấy máy gắp gấu này!" });
 
@@ -18,16 +19,28 @@ exports.playTurn = async (req, res) => {
     }
 
     let currentToysInDB = 0;
+   
+    let currentCoinsInDB = parseInt(machine.coinsPerPlay); 
+
     try {
         const qtyResponse = await axios.get('http://localhost:3000/api/machines/quantities');
         if (qtyResponse.data.success) {
             const match = qtyResponse.data.data.find(q => q.id_may === parseInt(machineId));
+            
+        
             currentToysInDB = match ? parseInt(match.tong_so_luong || 0) : 0;
             machine.currentToys = currentToysInDB;
+
+         
+            if (match) {
+                currentCoinsInDB = parseInt(match.so_xu_tren_luot || match.so_xu || match.coinsPerPlay || machine.coinsPerPlay);
+                machine.coinsPerPlay = currentCoinsInDB; 
+            }
         }
     } catch (err) {
-        console.error("Không thể lấy số lượng gấu real-time từ con 3000, sử dụng RAM tạm:", err.message);
+        
         currentToysInDB = machine.currentToys; 
+        currentCoinsInDB = machine.coinsPerPlay;
     }
 
     if (currentToysInDB <= 0) {
@@ -39,10 +52,11 @@ exports.playTurn = async (req, res) => {
         });
     }
 
-    // 1. TRỪ XU REAL-TIME
+
     try {
         const coreResponse = await axios.post('http://localhost:3000/api/user/deduct-coins', {
-            coinsToDeduct: parseInt(machine.coinsPerPlay) 
+           
+            coinsToDeduct: currentCoinsInDB 
         }, {
             headers: { 'Authorization': token }
         });
@@ -57,43 +71,45 @@ exports.playTurn = async (req, res) => {
         });
     }
 
-    // 2. TÍNH TOÁN KẾT QUẢ GẮP GẤU (Tỉ lệ 30%)
+  
     let toyId = null; 
     const trungGau = Math.random() < 0.5;
 
     if (trungGau) {
-        // Trừ ảo trên RAM trước để client cập nhật ngay lập tức
         machine.currentToys = Math.max(0, currentToysInDB - 1);
 
-        if (parseInt(machineId) === 1) {
-            const arrGau = [1, 2, 3];
-            toyId = arrGau[Math.floor(Math.random() * arrGau.length)];
-        } else if (parseInt(machineId) === 2) {
-            const arrMeo = [4, 5, 6];
-            toyId = arrMeo[Math.floor(Math.random() * arrMeo.length)];
-        } else {
-            toyId = 1;
-        }
+        const mId = parseInt(machineId);
+        
+        
+        const startToyId = (mId - 1) * 3 + 1;
+        const arrQuatang = [startToyId, startToyId + 1, startToyId + 2];
+        
+        toyId = arrQuatang[Math.floor(Math.random() * arrQuatang.length)];
     } else {
         machine.currentToys = currentToysInDB;
     }
 
-    // 3. GỌI SANG CON 3000 LƯU LỊCH SỬ VÀ KÍCH HOẠT TRỪ KHO THẬT TRÊN MYSQL
+
     try {
         const formattedToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
 
         await axios.post('http://localhost:3000/api/user/history', {
-            machineId: parseInt(machineId), // Ép kiểu số nguyên gửi lên
-            toyId: toyId                    // Trúng con nào gửi ID con đấy lên (1-6), trượt gửi null
+            machineId: parseInt(machineId), 
+            toyId: toyId                    
         }, {
             headers: { 'Authorization': formattedToken } 
         });
-        console.log(` [3001] Đã bắn yêu cầu lưu lịch sử & trừ kho thật sang Core-Service. Trúng ID: ${toyId}`);
+        console.log(`. Trúng ID: ${toyId}`);
     } catch (historyError) {
         console.error(" Lỗi không lưu được lịch sử chơi hoặc trừ kho DB:", historyError.response?.data || historyError.message);
     }
 
-    // 4. TRẢ KẾT QUẢ VỀ FRONTEND
+    
+    if (machine.currentToys === 0) {
+        machine.setTrangThai('Hết gấu', 'Người chơi đã bốc trúng con gấu cuối cùng.');
+    }
+
+    
     res.status(200).json({
         success: true,
         message: trungGau ? "Chúc mừng bạn đã gắp trúng gấu bông! " : "Hụt rồi, chúc bạn may mắn lần sau! ",

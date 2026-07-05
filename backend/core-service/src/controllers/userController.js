@@ -2,7 +2,7 @@ const UserModel = require('../models/userModel');
 const { CoinContext } = require('../strategies/coinPromotion');
 const jwt = require('jsonwebtoken');
 
-// Import thêm database trực tiếp để chạy câu lệnh SELECT/INSERT nhanh gọn
+
 const db = require('../config/database'); 
 
 const JWT_SECRET = 'sieu-bao-mat-btl-2026';
@@ -27,7 +27,7 @@ exports.getBalance = async (req, res) => {
 };
 
 
-// . NẠP TIỀN 
+
 
 exports.recharge = async (req, res) => {
     const { userId, amountVnd } = req.body;
@@ -35,23 +35,23 @@ exports.recharge = async (req, res) => {
 
     try {
         const context = new CoinContext();
-        context.setStrategyByDate(); // Tự động chọn chiến lược dựa trên thời gian thực tế hiện tại
+        context.setStrategyByDate(); 
         const exactCoins = context.executeStrategy(amountVnd);
 
-        // 1. Cộng dồn số dư xu vào bảng nguoidung 
+        
         await UserModel.updateBalance(userId, exactCoins);
 
-        // 2. CHÈN THÊM: Ghi nhận lịch sử vào bảng hoadonnapxu để sinh Mã Đơn & Doanh Thu
+      
         const queryInvoice = `
             INSERT INTO hoadonnapxu (id_khach_hang, so_tien_vnd, so_xu_nhan, phuong_thuc, trang_thai) 
             VALUES (?, ?, ?, 'Chuyển khoản', 'Thành công')
         `;
         const [result] = await db.query(queryInvoice, [userId, amountVnd, exactCoins]);
 
-        // Lấy Mã Đơn vừa tự động sinh ra trong database
+
         const maDonVuaTao = result.insertId;
 
-        // Trả về response có kèm ma_don cho phía người chơi hiển thị phiếu
+
         res.json({ 
             success: true, 
             message: `Nạp tiền thành công! Bạn được cộng ${exactCoins} xu vào tài khoản.`,
@@ -59,13 +59,13 @@ exports.recharge = async (req, res) => {
         });
 
     } catch (err) { 
-        console.error("❌ Lỗi khi xử lý nạp tiền & hóa đơn:", err.message);
+        console.error(" Lỗi khi xử lý nạp tiền & hóa đơn:", err.message);
         res.status(500).json({ error: err.message }); 
     }
 };
 
 
-// 3. TRỪ TIỀN KHI GẮP GẤU REAL-TIME
+
 
 exports.deductCoins = async (req, res) => { 
     const { coinsToDeduct } = req.body;
@@ -101,9 +101,9 @@ exports.deductCoins = async (req, res) => {
     }
 };
 
-// ==========================================
-// 4. LƯU LỊCH SỬ CHƠI VÀO MYSQL (3001 gọi sang)
-// ==========================================
+
+
+
 exports.createHistory = async (req, res) => {
     const { machineId, toyId } = req.body;
     
@@ -114,7 +114,7 @@ exports.createHistory = async (req, res) => {
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
         
-        // Gọi model lưu vào bảng LichSuChoi trong MySQL
+  
         await UserModel.savePlayHistory(decoded.id, machineId, toyId);
 
         return res.status(201).json({ success: true, message: 'Đã ghi nhận lịch sử chơi!' });
@@ -124,9 +124,7 @@ exports.createHistory = async (req, res) => {
     }
 };
 
-// ==========================================
-// 5. LẤY DANH SÁCH LỊCH SỬ CHƠI 
-// ==========================================
+
 exports.getPlayHistory = async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -164,19 +162,24 @@ exports.getPlayHistory = async (req, res) => {
     }
 };
 
-// ==========================================
-// 6. ĐỒNG BỘ SỐ LƯỢNG MÁY GẮP
-// ==========================================
+
+
 exports.getMachineQuantities = async (req, res) => {
     try {
+        
         const [rows] = await db.query(
-            `SELECT id_may, SUM(so_luong_hien_tai) as tong_so_luong 
-             FROM gautrongmay 
-             GROUP BY id_may`
+            `SELECT 
+                g.id_may, 
+                m.ten_may,
+                m.so_xu_tren_luot, 
+                SUM(g.so_luong_hien_tai) as tong_so_luong 
+             FROM gautrongmay g
+             INNER JOIN maygapgau m ON g.id_may = m.id
+             GROUP BY g.id_may, m.ten_may, m.so_xu_tren_luot`
         );
         return res.status(200).json({ success: true, data: rows });
     } catch (error) {
-        console.error("⚠️ Lỗi đồng bộ số lượng máy gắp:", error);
+        console.error(" Lỗi đồng bộ số lượng máy gắp:", error);
         return res.status(500).json({ success: false, data: [] });
     }
 };
