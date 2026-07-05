@@ -27,13 +27,14 @@ async function loadUserDashboard() {
     }
 }
 
-// 2. Lấy dữ liệu lịch sử thời gian thực từ MySQL
+// 2. Lấy dữ liệu lịch sử thời gian thực từ MySQL và tính điểm khấu trừ
 async function loadPlayHistoryRealTime() {
     const tableBody = document.getElementById('history-table-body');
     const totalPointsDisplay = document.getElementById('total-exchange-points'); 
     if (!tableBody) return;
 
     try {
+        // Chỉ gọi duy nhất API lịch sử, không gọi api/tickets bị lỗi nữa
         const response = await fetch(`${CORE_SERVICE_URL}/user/history`, fetchOptions);
         const data = await response.json();
 
@@ -49,6 +50,9 @@ async function loadPlayHistoryRealTime() {
         }
 
         let totalAccumulatedPoints = 0; 
+        
+        // 🔥 ĐÃ SỬA: Đọc giá trị điểm đã tiêu tích hợp sẵn trong bản ghi đầu tiên
+        const diemDaTieu = data.history[0].diem_da_tieu || 0;
 
         tableBody.innerHTML = data.history.map(row => {
             const thoiGianFormat = new Date(row.thoi_gian).toLocaleString('vi-VN', {
@@ -77,8 +81,10 @@ async function loadPlayHistoryRealTime() {
             `;
         }).join('');
 
+        // 🔥 HIỂN THỊ ĐIỂM THỰC TẾ SAU KHẤU TRỪ
         if (totalPointsDisplay) {
-            totalPointsDisplay.innerText = `${totalAccumulatedPoints} điểm`;
+            const finalPoints = totalAccumulatedPoints - diemDaTieu;
+            totalPointsDisplay.innerText = `${finalPoints} điểm`;
         }
 
     } catch (err) {
@@ -87,7 +93,7 @@ async function loadPlayHistoryRealTime() {
     }
 }
 
-// Chức năng Đổi Quà bắn dữ liệu thật lên Backend
+// Chức năng Đổi Quà bắn dữ liệu thật lên Backend (Không can thiệp vào Xu)
 async function handleExchange(idGau, giftName, requiredPoints) {
     const currentPointsText = document.getElementById('total-exchange-points').innerText;
     const currentPoints = parseInt(currentPointsText) || 0;

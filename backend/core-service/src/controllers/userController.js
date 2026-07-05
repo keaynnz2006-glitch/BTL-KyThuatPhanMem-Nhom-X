@@ -116,19 +116,24 @@ exports.getPlayHistory = async (req, res) => {
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
         
-        // 
+
         const [rows] = await db.query(
             `SELECT 
                 l.id_may, 
                 l.id_gau_trung, 
                 l.thoi_gian,
                 g.ten_gau,
-                COALESCE(g.gia_tri_diem, 0) as gia_tri_diem
+                COALESCE(g.gia_tri_diem, 0) as gia_tri_diem,
+                (
+                    SELECT COALESCE(SUM(p.so_diem_tieu_hao), 0) 
+                    FROM phieudoiqua p 
+                    WHERE p.id_khach_hang = ? AND p.id_nhan_vien_duyet IS NOT NULL
+                ) as diem_da_tieu
              FROM lichsuchoi l
              LEFT JOIN gaubong g ON l.id_gau_trung = g.id
              WHERE l.id_khach_hang = ? 
              ORDER BY l.thoi_gian DESC`,
-            [decoded.id]
+            [decoded.id, decoded.id] // Truyền ID người dùng vào cả 2 vị trí dấu hỏi chấm (?)
         );
 
         return res.status(200).json({ 
@@ -142,7 +147,6 @@ exports.getPlayHistory = async (req, res) => {
 };
 
 // ==========================================
-// 🔥 6. LẤY SỐ LƯỢNG TỔNG GẤU TỪ MYSQL (Hàm hồi sinh hệ thống)
 // ==========================================
 exports.getMachineQuantities = async (req, res) => {
     try {
