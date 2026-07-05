@@ -8,8 +8,7 @@ exports.createTicket = async (req, res) => {
     }
 
     try {
-        // 🔥 CHỈ TẠO PHIẾU ĐỔI QUÀ (Trạng thái chờ duyệt với id_nhan_vien_duyet = NULL)
-        // Tuyệt đối không viết lệnh UPDATE trừ xu ở đây nữa!
+       
         const insertTicketQuery = `
             INSERT INTO phieudoiqua (id_khach_hang, id_gau_muon_doi, so_diem_tieu_hao, thoi_gian, id_nhan_vien_duyet) 
             VALUES (?, ?, ?, NOW(), NULL)
@@ -22,7 +21,7 @@ exports.createTicket = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("❌ Lỗi xử lý đổi quà:", error.message);
+        console.error(" Lỗi xử lý đổi quà:", error.message);
         return res.status(500).json({ success: false, message: 'Lỗi hệ thống khi tạo phiếu!' });
     }
 };

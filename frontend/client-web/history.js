@@ -34,7 +34,7 @@ async function loadPlayHistoryRealTime() {
     if (!tableBody) return;
 
     try {
-        // Chỉ gọi duy nhất API lịch sử, không gọi api/tickets bị lỗi nữa
+        // Chỉ gọi duy nhất API lịch sử
         const response = await fetch(`${CORE_SERVICE_URL}/user/history`, fetchOptions);
         const data = await response.json();
 
@@ -51,7 +51,7 @@ async function loadPlayHistoryRealTime() {
 
         let totalAccumulatedPoints = 0; 
         
-        // 🔥 ĐÃ SỬA: Đọc giá trị điểm đã tiêu tích hợp sẵn trong bản ghi đầu tiên
+      
         const diemDaTieu = data.history[0].diem_da_tieu || 0;
 
         tableBody.innerHTML = data.history.map(row => {
@@ -81,7 +81,7 @@ async function loadPlayHistoryRealTime() {
             `;
         }).join('');
 
-        // 🔥 HIỂN THỊ ĐIỂM THỰC TẾ SAU KHẤU TRỪ
+        //  HIỂN THỊ ĐIỂM THỰC TẾ SAU KHẤU TRỪ
         if (totalPointsDisplay) {
             const finalPoints = totalAccumulatedPoints - diemDaTieu;
             totalPointsDisplay.innerText = `${finalPoints} điểm`;
@@ -93,7 +93,7 @@ async function loadPlayHistoryRealTime() {
     }
 }
 
-// Chức năng Đổi Quà bắn dữ liệu thật lên Backend (Không can thiệp vào Xu)
+// Chức năng Đổi Quà 
 async function handleExchange(idGau, giftName, requiredPoints) {
     const currentPointsText = document.getElementById('total-exchange-points').innerText;
     const currentPoints = parseInt(currentPointsText) || 0;
@@ -120,7 +120,7 @@ async function handleExchange(idGau, giftName, requiredPoints) {
         const data = await response.json();
 
         if (response.ok && data.success) {
-            alert(`🎉 Chúc mừng! Đã gửi yêu cầu đổi quà [${giftName}] thành công.\nHãy báo nhân viên tại quầy duyệt phiếu nhé!`);
+            alert(` Chúc mừng! Đã gửi yêu cầu đổi quà [${giftName}] thành công.\nHãy báo nhân viên tại quầy duyệt phiếu nhé!`);
             loadPlayHistoryRealTime();
         } else {
             alert('Lỗi tạo phiếu: ' + (data.error || 'Vui lòng thử lại!'));

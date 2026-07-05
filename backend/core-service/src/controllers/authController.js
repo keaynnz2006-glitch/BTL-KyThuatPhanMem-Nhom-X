@@ -16,7 +16,7 @@ exports.register = async (req, res) => {
         // Mặc định nếu không truyền vai_tro thì lưu là KhachHang
         const roleSave = vai_tro || 'KhachHang';
 
-        // 🔥 Lưu THẲNG mật khẩu chữ thường (mat_khau) vào DB, không băm bủng gì hết
+        
         await UserModel.create(tai_khoan, mat_khau, ho_ten, roleSave);
         res.status(201).json({ success: true, message: '🎉 Đăng ký tài khoản thành công!' });
     } catch (err) { 
@@ -31,7 +31,7 @@ exports.login = async (req, res) => {
         const user = await UserModel.findByUsername(tai_khoan);
         if (!user) return res.status(401).json({ error: 'Tài khoản hoặc mật khẩu không chính xác!' });
 
-        //  So sánh CHỮ THƯỜNG trực tiếp bằng toán tử !==
+        //  So sánh CHỮ THƯỜNG trực tiếp bằng toán tử !=
         if (mat_khau !== user.mat_khau) {
             return res.status(401).json({ error: 'Tài khoản hoặc mật khẩu không chính xác!' });
         }

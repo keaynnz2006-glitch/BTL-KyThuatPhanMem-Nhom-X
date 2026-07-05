@@ -1,7 +1,7 @@
 const StaffModel = require('../models/staffModel');
-const db = require('../config/database'); // Nhớ import db để chạy câu lệnh SELECT điểm cho nhanh gọn bro nhé
+const db = require('../config/database'); 
 
-// 1. Lấy danh sách các phiếu CHƯA DUYỆT (Giữ nguyên của bro)
+// 1. Lấy danh sách các phiếu CHƯA DUYỆT 
 exports.getAllTickets = async (req, res) => {
     try {
         const tickets = await StaffModel.getAllTickets();
@@ -12,7 +12,7 @@ exports.getAllTickets = async (req, res) => {
     }
 };
 
-// 2. Nhân viên bấm duyệt phiếu đổi quà - FIX CHỐNG ÂM ĐIỂM + TỰ ĐỘNG CHECK & TRỪ SỐ LƯỢNG TRONG MÁY
+// 2. Nhân viên bấm duyệt phiếu đổi quà -
 exports.approveTicket = async (req, res) => {
   
     const ticketId = req.params.id; 
@@ -27,7 +27,7 @@ exports.approveTicket = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Không tìm thấy phiếu đổi quà này bro!' });
         }
 
-        // 🛑 BẪY CHẶN SPAM DUYỆT: Nếu phiếu này ĐÃ ĐƯỢC DUYỆT RỒI thì dừng luôn
+      
         if (ticket.id_nhan_vien_duyet !== null) {
             return res.status(400).json({ success: false, message: 'Phiếu này đã được duyệt cấp quà từ trước rồi bro!' });
         }
@@ -60,7 +60,7 @@ exports.approveTicket = async (req, res) => {
         const targetMachine = machineBearRows[0];
         const idMayCanTru = targetMachine.id_may;
 
-        // 🔥 CHECK ĐIỂM THỰC TẾ TRƯỚC KHI CHO PHÉP UPDATE APPROVE
+        
         // 1. Tổng điểm gắp trúng của khách
         const [pointsRows] = await db.query(
             `SELECT COALESCE(SUM(g.gia_tri_diem), 0) as tong_trung 
@@ -83,7 +83,7 @@ exports.approveTicket = async (req, res) => {
         // Điểm thực tế của khách tại ĐÚNG GIÂY PHÚT nhân viên ấn nút Duyệt
         const diemThucTeConLai = tongTrung - tongDaTieu;
 
-        // ❌ CHẶN ĐỨNG: Nếu điểm còn lại nhỏ hơn điểm của phiếu này -> Báo lỗi, không cập nhật database!
+    
         if (diemThucTeConLai < soDiemPhieuNay) {
             return res.status(400).json({ 
                 success: false, 
@@ -91,14 +91,10 @@ exports.approveTicket = async (req, res) => {
             });
         }
 
-        // ====================================================================
-        // ĐỦ ĐIỂM + CÒN GẤU TRONG MÁY -> TIẾN HÀNH DUYỆT VÀ TỰ ĐỘNG TRỪ SỐ LƯỢNG MÁY
-        // ====================================================================
-
-        // Hợp lệ -> Gọi model cập nhật id_nhan_vien_duyet vào database (Giữ nguyên của bro)
+     
         await StaffModel.updateApprove(ticketId, finalStaffId);
 
-        // 🔥 CẬP NHẬT TRỪ SỐ LƯỢNG: Trừ bớt 1 gấu ở cột so_luong_hien_tai trong bảng gautrongmay
+   
         await db.query(
             `UPDATE gautrongmay 
              SET so_luong_hien_tai = so_luong_hien_tai - 1 
@@ -112,17 +108,17 @@ exports.approveTicket = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("❌ Lỗi cập nhật duyệt phiếu:", error);
+        console.error(" Lỗi cập nhật duyệt phiếu:", error);
         return res.status(500).json({ success: false, message: 'Lỗi hệ thống khi duyệt phiếu!' });
     }
 };
 
-// 3. Nhân viên bấm hủy phiếu (Xóa hẳn khỏi DB) (Giữ nguyên của bro)
+
 exports.rejectTicket = async (req, res) => {
-    const ticketId = req.params.id; // Thống nhất dùng .id giống hàm approve của bro nhé
+    const ticketId = req.params.id; 
 
     try {
-        // Chỉ xóa khi phiếu chưa được duyệt
+     
         const [result] = await db.query(
             'DELETE FROM phieudoiqua WHERE id = ? AND id_nhan_vien_duyet IS NULL', 
             [ticketId]
@@ -139,11 +135,9 @@ exports.rejectTicket = async (req, res) => {
     }
 };
 
-// ====================================================================
-// 🔥 CÁC HÀM PHỤC VỤ TÍNH NĂNG THÊM/NẠP GẤU VÀO MÁY Ở TRANG NHÂN VIÊN
-// ====================================================================
 
-// 4. Lấy danh sách máy hoạt động đổ vào <select> ở giao diện
+
+// . Lấy danh sách máy hoạt động đổ vào <select> ở giao diện
 exports.getAllMachines = async (req, res) => {
     try {
         const [machines] = await db.query('SELECT id, ten_may FROM maygapgau WHERE trang_thai = "Hoạt động"');
@@ -165,7 +159,7 @@ exports.getAllBears = async (req, res) => {
 
 // 6. Xử lý nạp gấu vào máy gắp (Cập nhật hoặc cộng dồn vào bảng gautrongmay)
 // 6. Xử lý nạp gấu vào máy gắp (Tự động CỘNG DỒN vào máy và TRỪ KHO TỔNG)
-// 6. Xử lý nạp gấu vào máy gắp (Tự động CỘNG DỒN vào máy và TRỪ KHO TỔNG) - ĐÃ FIX HẾT LỖI BIẾN
+
 exports.replenishBearToMachine = async (req, res) => {
     const { id_may, id_gau, so_luong_them } = req.body;
     const qty = parseInt(so_luong_them);
@@ -222,7 +216,7 @@ exports.replenishBearToMachine = async (req, res) => {
 
         return res.status(200).json({ 
             success: true, 
-            message: `🎉 Thành công! Đã nạp ${qty} con [${tenGau}] vào Máy #${id_may} và trừ ${qty} con ở kho tổng.` 
+            message: ` Thành công! Đã nạp ${qty} con [${tenGau}] vào Máy #${id_may} và trừ ${qty} con ở kho tổng.` 
         });
 
     } catch (error) {

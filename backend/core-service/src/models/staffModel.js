@@ -25,14 +25,14 @@ const StaffModel = {
         return rows;
     },
 
-    // 2. Tìm kiếm phiếu theo ID (Giữ nguyên của bro)
+    // 2. Tìm kiếm phiếu theo ID
     findTicketById: async (ticketId) => {
         const query = 'SELECT * FROM phieudoiqua WHERE id = ?';
         const [rows] = await db.query(query, [ticketId]);
         return rows[0];
     },
 
-    // 3. Cập nhật ID nhân viên duyệt vào phiếu đổi quà (Giữ nguyên của bro)
+    // 3. Cập nhật ID nhân viên duyệt vào phiếu đổi quà 
     updateApprove: async (ticketId, staffId) => {
         const query = 'UPDATE phieudoiqua SET id_nhan_vien_duyet = ? WHERE id = ?';
         const [result] = await db.query(query, [staffId, ticketId]);

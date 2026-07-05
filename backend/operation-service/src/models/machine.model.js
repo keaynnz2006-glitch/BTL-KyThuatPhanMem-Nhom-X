@@ -1,4 +1,4 @@
-const axios = require('axios'); // 🔥 IMPORT AXIOS ĐỂ GỌI ĐỒNG BỘ DỮ LIỆU TỪ CON 3000
+const axios = require('axios'); //  IMPORT AXIOS ĐỂ GỌI ĐỒNG BỘ DỮ LIỆU TỪ CON 3000
 
 class MayGapGauSubject {
     constructor(id, name, coinsPerPlay, currentToys) {
@@ -35,13 +35,13 @@ class MayGapGauSubject {
     }
 }
 
-// Khởi tạo mảng ban đầu (Để mặc định là 30 và 38 luôn làm dự phòng cho đẹp bro nhé)
+
 let dsMayGap = [
     new MayGapGauSubject(1, "Máy gacha gấu ", 2, 30),
     new MayGapGauSubject(2, "Máy gacha mèo ", 4, 38)
 ];
 
-// 🔥 HÀM THẦN THÁNH BỊ THIẾU: Tự động sang con 3000 lấy số lượng thật đè lên RAM
+
 async function updateQuantitiesFromDB() {
     try {
         // Gọi API chuẩn của con 3000
@@ -59,7 +59,7 @@ async function updateQuantitiesFromDB() {
             });
         }
     } catch (err) {
-        console.error("⚠️ Không kết nối được con 3000, giữ nguyên RAM dự phòng:", err.message);
+        console.error(" Không kết nối được con 3000, giữ nguyên RAM dự phòng:", err.message);
     }
 }
 

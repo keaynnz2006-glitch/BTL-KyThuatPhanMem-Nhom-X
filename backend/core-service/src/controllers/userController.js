@@ -7,9 +7,9 @@ const db = require('../config/database');
 
 const JWT_SECRET = 'sieu-bao-mat-btl-2026';
 
-// ==========================================
+
 // 1. LẤY SỐ DƯ TÀI KHOẢN
-// ==========================================
+
 exports.getBalance = async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -26,9 +26,9 @@ exports.getBalance = async (req, res) => {
     }
 };
 
-// ==========================================
-// 2. NẠP TIỀN (STRATEGY PATTERN) - ĐÃ LỒNG HÓA ĐƠN ĐỂ HIỂN THỊ ADMIN
-// ==========================================
+
+// . NẠP TIỀN 
+
 exports.recharge = async (req, res) => {
     const { userId, amountVnd } = req.body;
     if (!userId || !amountVnd) return res.status(400).json({ error: 'Thiếu thông tin số tiền nạp!' });
@@ -38,7 +38,7 @@ exports.recharge = async (req, res) => {
         context.setStrategyByDate(); // Tự động chọn chiến lược dựa trên thời gian thực tế hiện tại
         const exactCoins = context.executeStrategy(amountVnd);
 
-        // 1. Cộng dồn số dư xu vào bảng nguoidung (Giữ nguyên logic cũ của bro)
+        // 1. Cộng dồn số dư xu vào bảng nguoidung 
         await UserModel.updateBalance(userId, exactCoins);
 
         // 2. CHÈN THÊM: Ghi nhận lịch sử vào bảng hoadonnapxu để sinh Mã Đơn & Doanh Thu
@@ -64,9 +64,9 @@ exports.recharge = async (req, res) => {
     }
 };
 
-// ==========================================
+
 // 3. TRỪ TIỀN KHI GẮP GẤU REAL-TIME
-// ==========================================
+
 exports.deductCoins = async (req, res) => { 
     const { coinsToDeduct } = req.body;
 
@@ -159,7 +159,7 @@ exports.getPlayHistory = async (req, res) => {
             history: rows 
         });
     } catch (error) {
-        console.error("❌ Lỗi lấy lịch sử chơi từ MySQL:", error);
+        console.error(" Lỗi lấy lịch sử chơi từ MySQL:", error);
         return res.status(500).json({ success: false, message: 'Lỗi hệ thống không lấy được lịch sử!' });
     }
 };

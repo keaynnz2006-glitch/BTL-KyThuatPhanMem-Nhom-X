@@ -4,14 +4,46 @@ exports.getDashboardStats = async (req, res) => {
     try {
         const stats = await AdminModel.getStats();
         const recentOrders = await AdminModel.getRecentOrders();
-
-        return res.status(200).json({
-            success: true,
-            stats,
-            recentOrders
-        });
+        return res.status(200).json({ success: true, stats, recentOrders });
     } catch (error) {
-        console.error("❌ Lỗi lấy số liệu Dashboard Admin:", error);
-        return res.status(500).json({ success: false, message: 'Lỗi hệ thống không lấy được số liệu!' });
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+exports.getAllToys = async (req, res) => {
+    try {
+        const toys = await AdminModel.getAllToys();
+        return res.status(200).json({ success: true, toys });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+
+exports.addToy = async (req, res) => {
+    const { ten_gau, gia_tri_diem, so_luong_kho, hinh_anh } = req.body;
+    try {
+        const validationPoint = parseInt(gia_tri_diem) || 0;
+        const validationQty = parseInt(so_luong_kho) || 0;
+
+        const newId = await AdminModel.addToy(
+            ten_gau, 
+            validationPoint, 
+            validationQty, 
+            hinh_anh || 'default.png'
+        );
+        return res.status(201).json({ success: true, message: "Thêm gấu vào kho thành công!", id: newId });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+exports.deleteToy = async (req, res) => {
+    const { id } = req.params;
+    try {
+        await AdminModel.deleteToy(id);
+        return res.status(200).json({ success: true, message: "Đã xóa gấu khỏi kho thành công!" });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
     }
 };

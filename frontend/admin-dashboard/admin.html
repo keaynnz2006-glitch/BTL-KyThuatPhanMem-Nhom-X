@@ -24,25 +24,66 @@
             <p id="stat-stuffed">0 con</p>
         </div>
         <div class="stat-card card-machines">
-            <h3>Máy Gắp Hoạt Động</h3>
+            <h3>Máy Hoạt Động</h3>
             <p id="stat-machines">0 máy</p>
         </div>
     </div>
 
     <h3>Đơn nạp xu gần đây</h3>
+    <div style="max-height: 220px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 30px;">
+        <table style="margin: 0; width: 100%; border-collapse: collapse;">
+            <thead style="position: sticky; top: 0; background-color: #f1f2f6; z-index: 10;">
+                <tr>
+                    <th>Mã Đơn</th>
+                    <th>Khách Hàng</th>
+                    <th>Số Tiền Nạp</th>
+                    <th>Thời Gian</th>
+                </tr>
+            </thead>
+            <tbody id="recent-orders-list">
+                <tr><td colspan="4">Đang tải dữ liệu hệ thống...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>🧸 Quản lý kho gấu bông</h3>
+    
+    <div style="background: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0; margin-bottom: 20px; display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+            <label style="font-size: 14px; font-weight: bold; color: #333;">Tên gấu bông mới:</label>
+            <input type="text" id="input-toy-name" placeholder="Ví dụ: Gấu Lotso dâu" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; width: 220px; font-size: 14px;">
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+            <label style="font-size: 14px; font-weight: bold; color: #333;">Điểm đổi (Giá trị điểm):</label>
+            <input type="number" id="input-toy-point" placeholder="Ví dụ: 50" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; width: 120px; font-size: 14px;">
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+            <label style="font-size: 14px; font-weight: bold; color: #333;">Số lượng nhập kho:</label>
+            <input type="number" id="input-toy-quantity" placeholder="Ví dụ: 10" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; width: 120px; font-size: 14px;">
+        </div>
+
+        <button onclick="handleAddToy(event)" style="background: #20bf6b; color: white; border: none; padding: 9px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 14px;">
+            + Thêm Vào Kho
+        </button>
+    </div>
+
     <table>
         <thead>
-            <tr>
-                <th>Mã Đơn</th>
-                <th>Khách Hàng</th>
-                <th>Số Tiền Nạp</th>
-                <th>Thời Gian</th>
+            <tr style="background-color: #f1f2f6;">
+                <th>Mã Gấu</th>
+                <th>Tên Gấu</th>
+                <th>Giá Trị Quy Đổi</th>
+                <th>Số Lượng Trong Kho</th>
+                <th>Thao Tác</th>
             </tr>
         </thead>
-        <tbody id="recent-orders-list">
-            <tr><td colspan="4">Đang tải dữ liệu hệ thống...</td></tr>
+        <tbody id="toy-inventory-list">
+            <tr><td colspan="5">Đang tải danh sách kho gấu bông...</td></tr>
         </tbody>
     </table>
+
 </div>
 
 <script src="admin.js"></script>

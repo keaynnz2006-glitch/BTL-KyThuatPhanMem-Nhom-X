@@ -2,9 +2,8 @@ const db = require('../config/database');
 
 class AdminModel {
     static async getStats() {
-        // 🔥 Đã sửa thành so_tien_vnd theo đúng ERD
         const [revenue] = await db.query(`SELECT COALESCE(SUM(so_tien_vnd), 0) as total_revenue FROM hoadonnapxu`);
-        const [stuffed] = await db.query(`SELECT COUNT(*) as total_stuffed FROM gaubong`);
+        const [stuffed] = await db.query(`SELECT COALESCE(SUM(so_luong_kho), 0) as total_stuffed FROM gaubong`);
         const [machines] = await db.query(`SELECT COUNT(*) as total_machines FROM maygapgau`);
         
         return {
@@ -15,7 +14,6 @@ class AdminModel {
     }
 
     static async getRecentOrders() {
-        // 🔥 Đã sửa thành h.so_tien_vnd theo đúng ERD
         const [rows] = await db.query(`
             SELECT h.id, n.ho_ten, h.so_tien_vnd, h.thoi_gian 
             FROM hoadonnapxu h
@@ -25,6 +23,28 @@ class AdminModel {
         return rows;
     }
     
+    static async getAllToys() {
+        const [rows] = await db.query(`
+            SELECT id, ten_gau, gia_tri_diem, so_luong_kho as so_luong, hinh_anh 
+            FROM gaubong 
+            ORDER BY id DESC
+        `);
+        return rows;
+    }
+
+    // 🔥 SỬA BIẾN Ở ĐÂY: Đổi thẳng tên tham số thứ 3 thành so_luong_kho cho khỏi lệch phe
+    static async addToy(ten_gau, gia_tri_diem, so_luong_kho, hinh_anh) {
+        const [result] = await db.query(
+            `INSERT INTO gaubong (ten_gau, gia_tri_diem, so_luong_kho, hinh_anh) VALUES (?, ?, ?, ?)`,
+            [ten_gau, gia_tri_diem, so_luong_kho, hinh_anh]
+        );
+        return result.insertId;
+    }
+
+    static async deleteToy(id) {
+        await db.query(`DELETE FROM gaubong WHERE id = ?`, [id]);
+        return true;
+    }
 }
 
 module.exports = AdminModel;

@@ -88,15 +88,15 @@ exports.playTurn = async (req, res) => {
         }, {
             headers: { 'Authorization': formattedToken } 
         });
-        console.log(`🤖 [3001] -> Đã bắn yêu cầu lưu lịch sử & trừ kho thật sang Core-Service. Trúng ID: ${toyId}`);
+        console.log(` [3001] Đã bắn yêu cầu lưu lịch sử & trừ kho thật sang Core-Service. Trúng ID: ${toyId}`);
     } catch (historyError) {
-        console.error("⚠️ Lỗi không lưu được lịch sử chơi hoặc trừ kho DB:", historyError.response?.data || historyError.message);
+        console.error(" Lỗi không lưu được lịch sử chơi hoặc trừ kho DB:", historyError.response?.data || historyError.message);
     }
 
     // 4. TRẢ KẾT QUẢ VỀ FRONTEND
     res.status(200).json({
         success: true,
-        message: trungGau ? "Chúc mừng bạn đã gắp trúng gấu bông! 🧸" : "Hụt rồi, chúc bạn may mắn lần sau! 😢",
+        message: trungGau ? "Chúc mừng bạn đã gắp trúng gấu bông! " : "Hụt rồi, chúc bạn may mắn lần sau! ",
         ketQua: trungGau ? "WIN" : "LOSE",
         soGauConLaiTrongMay: machine.currentToys 
     });
