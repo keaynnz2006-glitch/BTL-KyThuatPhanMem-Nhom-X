@@ -2,7 +2,7 @@ const UserModel = require('../models/userModel');
 const { CoinContext } = require('../strategies/coinPromotion');
 const jwt = require('jsonwebtoken');
 
-// Import thêm database trực tiếp để chạy câu lệnh SELECT nhanh gọn
+// Import thêm database trực tiếp để chạy câu lệnh SELECT/INSERT nhanh gọn
 const db = require('../config/database'); 
 
 const JWT_SECRET = 'sieu-bao-mat-btl-2026';
@@ -27,7 +27,7 @@ exports.getBalance = async (req, res) => {
 };
 
 // ==========================================
-// 2. NẠP TIỀN (STRATEGY PATTERN)
+// 2. NẠP TIỀN (STRATEGY PATTERN) - ĐÃ LỒNG HÓA ĐƠN ĐỂ HIỂN THỊ ADMIN
 // ==========================================
 exports.recharge = async (req, res) => {
     const { userId, amountVnd } = req.body;
@@ -35,12 +35,31 @@ exports.recharge = async (req, res) => {
 
     try {
         const context = new CoinContext();
-        context.setStrategyByDate(); // Tự động chọn chiến lược dựa trên thời gian thực hiện tại
+        context.setStrategyByDate(); // Tự động chọn chiến lược dựa trên thời gian thực tế hiện tại
         const exactCoins = context.executeStrategy(amountVnd);
 
+        // 1. Cộng dồn số dư xu vào bảng nguoidung (Giữ nguyên logic cũ của bro)
         await UserModel.updateBalance(userId, exactCoins);
-        res.json({ success: true, message: `Nạp tiền thành công! Bạn được cộng ${exactCoins} xu vào tài khoản.` });
+
+        // 2. CHÈN THÊM: Ghi nhận lịch sử vào bảng hoadonnapxu để sinh Mã Đơn & Doanh Thu
+        const queryInvoice = `
+            INSERT INTO hoadonnapxu (id_khach_hang, so_tien_vnd, so_xu_nhan, phuong_thuc, trang_thai) 
+            VALUES (?, ?, ?, 'Chuyển khoản', 'Thành công')
+        `;
+        const [result] = await db.query(queryInvoice, [userId, amountVnd, exactCoins]);
+
+        // Lấy Mã Đơn vừa tự động sinh ra trong database
+        const maDonVuaTao = result.insertId;
+
+        // Trả về response có kèm ma_don cho phía người chơi hiển thị phiếu
+        res.json({ 
+            success: true, 
+            message: `Nạp tiền thành công! Bạn được cộng ${exactCoins} xu vào tài khoản.`,
+            ma_don: maDonVuaTao 
+        });
+
     } catch (err) { 
+        console.error("❌ Lỗi khi xử lý nạp tiền & hóa đơn:", err.message);
         res.status(500).json({ error: err.message }); 
     }
 };
@@ -105,7 +124,7 @@ exports.createHistory = async (req, res) => {
     }
 };
 
-
+// ==========================================
 // 5. LẤY DANH SÁCH LỊCH SỬ CHƠI 
 // ==========================================
 exports.getPlayHistory = async (req, res) => {
@@ -116,7 +135,6 @@ exports.getPlayHistory = async (req, res) => {
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
         
-
         const [rows] = await db.query(
             `SELECT 
                 l.id_may, 
@@ -133,7 +151,7 @@ exports.getPlayHistory = async (req, res) => {
              LEFT JOIN gaubong g ON l.id_gau_trung = g.id
              WHERE l.id_khach_hang = ? 
              ORDER BY l.thoi_gian DESC`,
-            [decoded.id, decoded.id] // Truyền ID người dùng vào cả 2 vị trí dấu hỏi chấm (?)
+            [decoded.id, decoded.id]
         );
 
         return res.status(200).json({ 
@@ -147,6 +165,7 @@ exports.getPlayHistory = async (req, res) => {
 };
 
 // ==========================================
+// 6. ĐỒNG BỘ SỐ LƯỢNG MÁY GẮP
 // ==========================================
 exports.getMachineQuantities = async (req, res) => {
     try {

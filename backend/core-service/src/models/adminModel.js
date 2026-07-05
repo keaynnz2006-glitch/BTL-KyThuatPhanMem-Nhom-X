@@ -24,6 +24,7 @@ class AdminModel {
         `);
         return rows;
     }
+    
 }
 
 module.exports = AdminModel;

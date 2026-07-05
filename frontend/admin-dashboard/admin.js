@@ -37,7 +37,7 @@ async function loadDashboardData() {
                     <tr>
                         <td>#${order.id}</td>
                         <td>${order.ho_ten}</td>
-                        <td><strong style="color: #20bf6b;">+${Number(order.so_tien).toLocaleString('vi-VN')}đ</strong></td>
+                       <td><strong style="color: #20bf6b;">+${Number(order.so_tien_vnd).toLocaleString('vi-VN')}đ</strong></td>
                         <td>${timeStr}</td>
                     </tr>
                 `;
@@ -55,4 +55,7 @@ function handleLogout() {
 }
 
 // Kích hoạt hàm chạy dữ liệu khi trang web sẵn sàng
-loadDashboardData();
+loadDashboardData(); // Chạy lần đầu khi mở trang
+
+
+setInterval(loadDashboardData, 3000);
