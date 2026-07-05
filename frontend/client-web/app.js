@@ -1,19 +1,16 @@
-
 // 1. CẤU HÌNH CỔNG API CHO CÁC SERVICE
-const CORE_SERVICE_URL = 'http://localhost:3000/api';       // Xử lý Thành viên, Số dư, Nạp tiền
-const OPERATION_SERVICE_URL = 'http://localhost:3001/api';  // Xử lý Danh sách máy, Lượt chơi Gacha
+const CORE_SERVICE_URL = 'http://localhost:3000/api';       
+const OPERATION_SERVICE_URL = 'http://localhost:3001/api';  
 
 const userId = localStorage.getItem('user_id');
-const token = localStorage.getItem('user_token'); //  Sử dụng duy nhất user_token toàn file
+const token = localStorage.getItem('user_token'); 
 let selectedPaymentMethod = 'momo'; // Mặc định chọn ví momo ở giao diện
-// 2. BẢO VỆ TRANG (ROUTE GUARD)
-// ==========================================
+
 if (!token || !userId) {
     alert('Bro vui lòng đăng nhập trước!');
     window.location.href = 'login.html';
 }
-// 3. LOGIC HIỂN THỊ THÔNG TIN NGƯỜI DÙNG
-// ==========================================
+
 async function loadUserDashboard() {
     try {
         const response = await fetch(`${CORE_SERVICE_URL}/user/balance`, {
@@ -91,46 +88,45 @@ async function handleRechargeNew() {
 }
 
 
-// 5. LOGIC RENDER DANH SÁCH MÁY GẮP GẤU ĐỘNG
-// 5. LOGIC RENDER DANH SÁCH MÁY GẮP GẤU ĐỘNG
+
 async function loadMachines() {
     const machineGrid = document.getElementById('machine-container') || document.getElementById('machine-grid') || document.querySelector('.machine-grid');
     if (!machineGrid) return;
 
     try {
-        // 🎯 ĐỔI TỪ CỔNG 3000 SANG CỔNG 3001 ĐỂ LẤY MẢNG RAM
+     
         const response = await fetch('http://localhost:3001/api/machines', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const responseData = await response.json(); 
 
-        // Sửa lại theo cấu trúc dữ liệu con 3001 trả về (ví dụ data: dsMayGap hoặc responseData.data)
+       
         const quantitiesList = responseData.success ? (responseData.data || responseData.machines) : []; 
         machineGrid.innerHTML = ''; 
 
         quantitiesList.forEach(item => {
-            let machineName = item.name; // Đọc trực tiếp từ object MayGapGauSubject
-            let icon = '🧸';
-            let bgColors = '#74b9ff';
-            let coinsPerPlay = parseInt(item.coinsPerPlay); // Đọc từ mảng RAM con 3001
-            let tongSoLuong = item.currentToys; // Đọc từ mảng RAM con 3001
+            let machineName = item.name; 
+            let coinsPerPlay = parseInt(item.coinsPerPlay); 
+            let tongSoLuong = item.currentToys;
+            let imgUrl = '../assets/may3.png'; // Ảnh mặc định
 
             if (item.id === 1) {
-                icon = '🧸';
-                bgColors = '#74b9ff';
+                imgUrl = '../assets/may1.png';
             } else if (item.id === 2) {
-                icon = '🐱';
-                bgColors = '#ffeaa7';
+                imgUrl = '../assets/may2.png';
             } else {
-                icon = '🦊'; // Icon cho máy cáo hoặc máy Pro
-                bgColors = '#ffbe76';
+                imgUrl = '../assets/may3.png';
             }
 
             const cardHtml = `
                 <div class="machine-card" style="border: 1px solid #ddd; padding: 20px; border-radius: 12px; min-width: 240px; background: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.05); text-align: center; display: inline-block; margin: 10px; vertical-align: top;">
                     <span class="status-badge" style="padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; color: #fff; background: ${item.trangThai === 'Active' ? '#20bf6b' : '#ff4d4d'};">${item.trangThai}</span>
-                    <div class="machine-img" style="background: ${bgColors}; width: 70px; height: 70px; line-height: 70px; border-radius: 50%; font-size: 36px; margin: 15px auto 10px auto;">${icon}</div>
+                    
+                    <div style="margin: 15px auto 10px auto; width: 75px; height: 75px;">
+                        <img src="${imgUrl}" alt="${machineName}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    </div>
+
                     <div class="machine-body">
                         <div class="machine-name" style="font-weight: bold; font-size: 18px; margin-bottom: 8px; color: #333;">${machineName}</div>
                         <div class="machine-cost" style="color: #666; font-size: 14px; margin-bottom: 5px;">Giá chơi: <span style="color: #ff4d4d; font-weight: bold;">${coinsPerPlay} Xu</span> / lượt</div>
@@ -138,7 +134,7 @@ async function loadMachines() {
                         <button class="btn-play" 
                                 style="width: 100%; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; background: #6c5ce7; color: #fff;"
                                 onclick="playGame(${item.id}, ${coinsPerPlay}, '${machineName}')">
-                            Vào Chơi Ngay
+                                Vào Chơi Ngay
                         </button>
                     </div>
                 </div>
@@ -227,7 +223,7 @@ async function loadPlayHistory() {
 
 
 // 8. LOGIC ĐĂNG XUẤT VÀ KHỞI CHẠY
-function logout() {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+function logout() {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
     localStorage.clear();
     window.location.href = 'login.html';
 }

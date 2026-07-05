@@ -9,9 +9,25 @@
 <body>
 
 <div class="container">
-    <div class="header">
+    <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
         <h2>📊 HỆ THỐNG QUẢN TRỊ - DASHBOARD</h2>
-        <button class="btn-logout" onclick="handleLogout()">Đăng xuất</button>
+        
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <a href="../staff/staff.html" style="
+                display: inline-block;
+                background-color: #6c5ce7; 
+                color: white; 
+                text-decoration: none; 
+                padding: 8px 16px; 
+                border-radius: 4px; 
+                font-weight: bold;
+                font-size: 14px;
+                transition: background-color 0.2s;
+            " onmouseover="this.style.backgroundColor='#5b4bc4'" onmouseout="this.style.backgroundColor='#6c5ce7'">
+                🎮 Trang Nhân Viên
+            </a>
+            <button class="btn-logout" onclick="handleLogout()">Đăng xuất</button>
+        </div>
     </div>
 
     <div class="stats-grid">

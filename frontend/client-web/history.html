@@ -33,8 +33,17 @@
         .gift-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: #fff; border-radius: 12px; border: 1px solid #f1f2f6; transition: 0.2s; }
         .gift-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .gift-info { display: flex; align-items: center; gap: 15px; }
-        .gift-icon { font-size: 28px; }
-        .gift-name { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+        
+        /* 🎨 Thêm class CSS dùng chung để tối ưu kích thước ảnh quà tặng */
+        .gift-avatar {
+            width: 55px; 
+            height: 55px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            border: 2px solid #eee;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        .gift-name { font-weight: 600; font-size: 15px; margin-bottom: 4px; color: #2d3436; }
         .gift-points { font-size: 13px; color: #ff7675; font-weight: bold; }
         .btn-exchange { background: #10ac84; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-exchange:hover { background: #0ee0a4; }
@@ -78,44 +87,44 @@
             </div>
 
             <div class="dashboard-box">
-    <h3>🎁 Kho Đổi Quà Khổng Lồ</h3>
-    <div class="gift-list">
-        
-        <div class="gift-item">
-            <div class="gift-info">
-                <span class="gift-icon">🐱</span>
-                <div>
-                    <div class="gift-name">Mèo Siêu Khổng Lồ</div>
-                    <div class="gift-points">Yêu cầu: Tích lũy 10 điểm</div>
+                <h3>🎁 Kho Đổi Quà Khổng Lồ</h3>
+                <div class="gift-list">
+                    
+                    <div class="gift-item">
+                        <div class="gift-info">
+                            <img src="../assets/MeoB.png" alt="Mèo Siêu Khổng Lồ" class="gift-avatar">
+                            <div>
+                                <div class="gift-name">Mèo Siêu Khổng Lồ</div>
+                                <div class="gift-points">Yêu cầu: Tích lũy 10 điểm</div>
+                            </div>
+                        </div>
+                        <button class="btn-exchange" onclick="handleExchange(7, 'Mèo Siêu Khổng Lồ', 10)">Đổi Quà</button>
+                    </div>
+
+                    <div class="gift-item">
+                        <div class="gift-info">
+                            <img src="../assets/GauB.png" alt="Gấu Siêu Khổng Lồ" class="gift-avatar">
+                            <div>
+                                <div class="gift-name">Gấu Siêu Khổng Lồ</div>
+                                <div class="gift-points">Yêu cầu: Tích lũy 15 điểm</div>
+                            </div>
+                        </div>
+                        <button class="btn-exchange" onclick="handleExchange(8, 'Gấu Siêu Khổng Lồ', 15)">Đổi Quà</button>
+                    </div>
+
+                    <div class="gift-item">
+                        <div class="gift-info">
+                            <img src="../assets/CapybaraB.png" alt="Capybara Siêu Khổng Lồ" class="gift-avatar">
+                            <div>
+                                <div class="gift-name">Capybara Siêu Khổng Lồ</div>
+                                <div class="gift-points">Yêu cầu: Tích lũy 20 điểm</div>
+                            </div>
+                        </div>
+                        <button class="btn-exchange" onclick="handleExchange(9, 'Capybara Siêu Khổng Lồ', 20)">Đổi Quà</button>
+                    </div>
+
                 </div>
             </div>
-            <button class="btn-exchange" onclick="handleExchange(7, 'Mèo Siêu Khổng Lồ', 10)">Đổi Quà</button>
-        </div>
-
-        <div class="gift-item">
-            <div class="gift-info">
-                <span class="gift-icon">🐻</span>
-                <div>
-                    <div class="gift-name">Gấu Siêu Khổng Lồ</div>
-                    <div class="gift-points">Yêu cầu: Tích lũy 15 điểm</div>
-                </div>
-            </div>
-            <button class="btn-exchange" onclick="handleExchange(8, 'Gấu Siêu Khổng Lồ', 15)">Đổi Quà</button>
-        </div>
-
-        <div class="gift-item">
-            <div class="gift-info">
-                <span class="gift-icon">🐹</span>
-                <div>
-                    <div class="gift-name">Capybara Siêu Khổng Lồ</div>
-                    <div class="gift-points">Yêu cầu: Tích lũy 20 điểm</div>
-                </div>
-            </div>
-            <button class="btn-exchange" onclick="handleExchange(9, 'Capybara Siêu Khổng Lồ', 20)">Đổi Quà</button>
-        </div>
-
-    </div>
-</div>
         </div>
     </div>
 

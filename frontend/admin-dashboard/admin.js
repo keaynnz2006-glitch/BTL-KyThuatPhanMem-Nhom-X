@@ -155,7 +155,7 @@ window.handleDeleteToy = async function(id) {
 
         const data = await response.json();
         if (response.ok && data.success) {
-            alert('🗑️ Đã bớt gấu thành công!');
+            alert('Đã bớt gấu thành công!');
             
         
             loadDashboardData();

@@ -3,7 +3,7 @@ const token = localStorage.getItem('user_token');
 const role = localStorage.getItem('user_role');
 const staffId = localStorage.getItem('user_id'); 
 
-if (!token || role !== 'NhanVien') {
+if (!token || (role !== 'NhanVien' && role !== 'Admin')) {
     alert('Bro không có quyền truy cập trang này!');
     window.location.href = '../login.html';
 }
