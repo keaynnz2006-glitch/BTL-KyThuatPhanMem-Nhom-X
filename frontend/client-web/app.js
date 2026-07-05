@@ -1,22 +1,17 @@
-// ==========================================
+
 // 1. CẤU HÌNH CỔNG API CHO CÁC SERVICE
-// ==========================================
 const CORE_SERVICE_URL = 'http://localhost:3000/api';       // Xử lý Thành viên, Số dư, Nạp tiền
 const OPERATION_SERVICE_URL = 'http://localhost:3001/api';  // Xử lý Danh sách máy, Lượt chơi Gacha
 
 const userId = localStorage.getItem('user_id');
 const token = localStorage.getItem('user_token'); //  Sử dụng duy nhất user_token toàn file
 let selectedPaymentMethod = 'momo'; // Mặc định chọn ví momo ở giao diện
-
-// ==========================================
 // 2. BẢO VỆ TRANG (ROUTE GUARD)
 // ==========================================
 if (!token || !userId) {
     alert('Bro vui lòng đăng nhập trước!');
     window.location.href = 'login.html';
 }
-
-// ==========================================
 // 3. LOGIC HIỂN THỊ THÔNG TIN NGƯỜI DÙNG
 // ==========================================
 async function loadUserDashboard() {
@@ -38,10 +33,7 @@ async function loadUserDashboard() {
         console.error('Không kết nối được server lấy số dư:', error);
     }
 }
-
-// ==========================================
 // 4. LOGIC TƯƠNG TÁC GIAO DIỆN NẠP TIỀN
-// ==========================================
 function selectPreset(amount, element) {
     document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
     element.classList.add('active');
@@ -98,9 +90,8 @@ async function handleRechargeNew() {
     }
 }
 
-// ==========================================
+
 // 5. LOGIC RENDER DANH SÁCH MÁY GẮP GẤU ĐỘNG
-// ==========================================
 async function loadMachines() {
     const machineGrid = document.querySelector('.machine-grid');
     if (!machineGrid) return; // Nếu không ở trang chủ thì bỏ qua
@@ -168,9 +159,8 @@ async function loadMachines() {
     }
 }
 
-// ==========================================
+
 // 6. LOGIC GỬI LƯỢT CHƠI (GẮP GẤU REAL-TIME & LƯU LỊCH SỬ)
-// ==========================================
 async function playGame(machineId, cost, machineName) {
     const confirmed = confirm(`Xác nhận dùng ${cost} Xu để quay tủ Gacha [${machineName}] không bro?`);
     if (!confirmed) return;
@@ -205,9 +195,8 @@ async function playGame(machineId, cost, machineName) {
     }
 }
 
-// ==========================================
+
 // 7. LOGIC TẢI LỊCH SỬ CHƠI TỪ MYSQL (RENDER LÊN TRANG HISTORY.HTML)
-// ==========================================
 async function loadPlayHistory() {
     const tableBody = document.getElementById('history-table-body');
     if (!tableBody) return; // Nếu không đứng ở trang history.html thì bỏ qua không chạy
@@ -244,9 +233,8 @@ async function loadPlayHistory() {
     }
 }
 
-// ==========================================
+
 // 8. LOGIC ĐĂNG XUẤT VÀ KHỞI CHẠY
-// ==========================================
 function logout() {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
     localStorage.clear();
     window.location.href = 'login.html';
@@ -262,5 +250,4 @@ async function initApp() {
     }
 }
 
-// Chạy ứng dụng khi DOM sẵn sàng
 document.addEventListener('DOMContentLoaded', initApp);
