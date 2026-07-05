@@ -7,45 +7,28 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: #f5f6fa; color: #2d3436; }
-
-        /* Navigation Bar */
         nav { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .logo { font-size: 20px; font-weight: bold; color: #6c5ce7; cursor: pointer; text-decoration: none; }
         .user-info { display: flex; align-items: center; gap: 15px; }
         .coin-badge { background: #ffeaa7; color: #d63031; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 14px; border: 1px solid #fdcb6e; }
         .btn-nav { background: #6c5ce7; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; font-size: 14px; transition: 0.2s; }
         .btn-nav:hover { background: #5b4cc4; }
-
-        /* Main Container */
         .container { max-width: 1140px; margin: 40px auto; padding: 0 20px; }
         .history-gift-container { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; }
-        
-        @media (max-width: 768px) {
-            .history-gift-container { grid-template-columns: 1fr; }
-        }
-
-        /* Dashboard Box */
+        @media (max-width: 768px) { .history-gift-container { grid-template-columns: 1fr; } }
         .dashboard-box { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #ebdfff; }
         .dashboard-box h3 { margin-bottom: 24px; font-size: 18px; color: #2d3436; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        
-        /* 🔥 Hộp hiển thị Tổng Điểm Tích Lũy */
         .score-alert { background: #e0f7fa; border: 1px solid #b2ebf2; padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
         .score-title { font-size: 15px; font-weight: 600; color: #006064; }
         .score-number { font-size: 24px; color: #00838f; font-weight: 800; }
-
-        /* Table Styling */
         .table-responsive { width: 100%; overflow-x: auto; }
         .history-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
         .history-table th, .history-table td { padding: 14px 16px; border-bottom: 1px solid #f1f2f6; }
         .history-table th { background: #f8f9fa; color: #636e72; font-weight: 600; border-radius: 4px; }
         .history-table tbody tr:hover { background-color: #fafafa; }
-        
-        /* Status Badges */
         .badge-result { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; }
         .badge-win { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
         .badge-lose { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
-
-        /* Gift List */
         .gift-list { display: flex; flex-direction: column; gap: 15px; }
         .gift-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: #fff; border-radius: 12px; border: 1px solid #f1f2f6; transition: 0.2s; }
         .gift-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
@@ -64,7 +47,7 @@
         <div class="user-info">
             <span id="user-display" style="font-weight: 600;">Xin chào, Bro!</span>
             <div id="coin-balance" class="coin-badge">💰 0 Xu</div>
-            <a href="index.html" class="btn-nav">🏠 Quay về Trang Chủ</a>
+            <a href="index.html" class="btn-nav"> Quay về Trang Chủ</a>
         </div>
     </nav>
 
@@ -72,12 +55,10 @@
         <div class="history-gift-container">
             <div class="dashboard-box">
                 <h3>📜 Lịch Sử Chơi Gắp Gấu</h3>
-
                 <div class="score-alert">
-                    <span class="score-title">🏆 Tổng điểm đổi quà tích lũy hiện có:</span>
+                    <span class="score-title"> Tổng điểm đổi quà tích lũy hiện có:</span>
                     <span class="score-number" id="total-exchange-points">0 điểm</span>
                 </div>
-
                 <div class="table-responsive">
                     <table class="history-table">
                         <thead>
@@ -97,144 +78,47 @@
             </div>
 
             <div class="dashboard-box">
-                <h3>🎁 Kho Đổi Quà</h3>
-                <div class="gift-list">
-                    <div class="gift-item">
-                        <div class="gift-info">
-                            <span class="gift-icon">🍹</span>
-                            <div>
-                                <div class="gift-name">Voucher Trà Sữa TocoToco Free</div>
-                                <div class="gift-points">Yêu cầu: Tích lũy 2 điểm</div>
-                            </div>
-                        </div>
-                        <button class="btn-exchange" onclick="handleExchange('Voucher Trà Sữa', 2)">Đổi Quà</button>
-                    </div>
-                    <div class="gift-item">
-                        <div class="gift-info">
-                            <span class="gift-icon">🧸</span>
-                            <div>
-                                <div class="gift-name">Gấu Bông Capybara (Size L)</div>
-                                <div class="gift-points">Yêu cầu: Tích lũy 5 điểm</div>
-                            </div>
-                        </div>
-                        <button class="btn-exchange" onclick="handleExchange('Gấu Bông Capybara', 5)">Đổi Quà</button>
-                    </div>
+    <h3>🎁 Kho Đổi Quà Khổng Lồ</h3>
+    <div class="gift-list">
+        
+        <div class="gift-item">
+            <div class="gift-info">
+                <span class="gift-icon">🐱</span>
+                <div>
+                    <div class="gift-name">Mèo Siêu Khổng Lồ</div>
+                    <div class="gift-points">Yêu cầu: Tích lũy 10 điểm</div>
                 </div>
             </div>
+            <button class="btn-exchange" onclick="handleExchange(7, 'Mèo Siêu Khổng Lồ', 10)">Đổi Quà</button>
+        </div>
+
+        <div class="gift-item">
+            <div class="gift-info">
+                <span class="gift-icon">🐻</span>
+                <div>
+                    <div class="gift-name">Gấu Siêu Khổng Lồ</div>
+                    <div class="gift-points">Yêu cầu: Tích lũy 15 điểm</div>
+                </div>
+            </div>
+            <button class="btn-exchange" onclick="handleExchange(8, 'Gấu Siêu Khổng Lồ', 15)">Đổi Quà</button>
+        </div>
+
+        <div class="gift-item">
+            <div class="gift-info">
+                <span class="gift-icon">🐹</span>
+                <div>
+                    <div class="gift-name">Capybara Siêu Khổng Lồ</div>
+                    <div class="gift-points">Yêu cầu: Tích lũy 20 điểm</div>
+                </div>
+            </div>
+            <button class="btn-exchange" onclick="handleExchange(9, 'Capybara Siêu Khổng Lồ', 20)">Đổi Quà</button>
+        </div>
+
+    </div>
+</div>
         </div>
     </div>
 
-    <script>
-        const CORE_SERVICE_URL = 'http://localhost:3000/api';
-        const token = localStorage.getItem('user_token');
-        const userId = localStorage.getItem('user_id');
-
-        // Kiểm tra bảo mật đầu trang
-        if (!token || !userId) {
-            alert('Bro vui lòng đăng nhập trước nhé!');
-            window.location.href = 'login.html';
-        }
-
-        const fetchOptions = {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${token}` }
-        };
-
-        // 1. Lấy thông tin số dư tài khoản
-        async function loadUserDashboard() {
-            try {
-                const response = await fetch(`${CORE_SERVICE_URL}/user/balance`, fetchOptions);
-                const data = await response.json();
-                if (response.ok) {
-                    document.getElementById('user-display').innerText = `Xin chào, ${data.fullName}!`;
-                    document.getElementById('coin-balance').innerText = `💰 ${data.coins} Xu`;
-                }
-            } catch (err) {
-                console.error('Lỗi lấy số dư:', err);
-            }
-        }
-
-        // 2. Lấy dữ liệu lịch sử thời gian thực từ MySQL
-        async function loadPlayHistoryRealTime() {
-            const tableBody = document.getElementById('history-table-body');
-            const totalPointsDisplay = document.getElementById('total-exchange-points'); // ID hộp hiển thị điểm dồn
-            if (!tableBody) return;
-
-            try {
-                const response = await fetch(`${CORE_SERVICE_URL}/user/history`, fetchOptions);
-                const data = await response.json();
-
-                if (!response.ok || !data.success) {
-                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #d63031; padding: 20px;">Không thể tải dữ liệu lịch sử!</td></tr>';
-                    return;
-                }
-
-                if (data.history.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #636e72; padding: 30px;">Bro chưa chơi lượt nào cả, ra trang chủ gắp ngay đi! 🧸</td></tr>';
-                    if (totalPointsDisplay) totalPointsDisplay.innerText = '0 điểm';
-                    return;
-                }
-
-                let totalAccumulatedPoints = 0; // 🔥 Biến tính tổng điểm tích lũy của khách hàng
-
-                // Render dữ liệu lịch sử bằng map và join
-                tableBody.innerHTML = data.history.map(row => {
-                    const thoiGianFormat = new Date(row.thoi_gian).toLocaleString('vi-VN', {
-                        hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit'
-                    });
-                    
-                    const tenMay = row.ten_may || `Máy gắp số #${row.id_may}`;
-                    const isWin = row.id_gau_trung !== null;
-                    
-                    // 🔥 Lấy gia_tri_diem từ DB. Nếu thắng cộng điểm của gấu bông, hụt tính bằng 0
-                    const currentPoints = isWin ? parseInt(row.gia_tri_diem || 0) : 0;
-                    totalAccumulatedPoints += currentPoints;
-
-                    const badgeHtml = isWin 
-                        ? `<span class="badge-result badge-win">🎉 TRÚNG: ${row.ten_gau || `Gấu ID ${row.id_gau_trung}`}</span>` 
-                        : `<span class="badge-result badge-lose">❌ HỤT RỒI</span>`;
-
-                    return `
-                        <tr>
-                            <td>${thoiGianFormat}</td>
-                            <td><strong>${tenMay}</strong></td>
-                            <td>${badgeHtml}</td>
-                            <td style="font-weight: bold; color: ${isWin ? '#2e7d32' : '#b2bec3'};">
-                                ${isWin ? `+${currentPoints} điểm` : '0'}
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-
-                // 🔥 Đẩy tổng số điểm tích lũy dồn được lên Hộp thông báo phía trên bảng
-                if (totalPointsDisplay) {
-                    totalPointsDisplay.innerText = `${totalAccumulatedPoints} điểm`;
-                }
-
-            } catch (err) {
-                console.error('Lỗi kết nối lịch sử:', err);
-                tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #d63031; padding: 20px;">Mất kết nối tới máy chủ dữ liệu!</td></tr>';
-            }
-        }
-
-        // 🔥 Chức năng Đổi Quà có check điểm thực tế
-        function handleExchange(giftName, requiredPoints) {
-            const currentPointsText = document.getElementById('total-exchange-points').innerText;
-            const currentPoints = parseInt(currentPointsText) || 0;
-
-            if (currentPoints < requiredPoints) {
-                alert(`Không đủ điểm bro ơi!\nQuà này cần [${requiredPoints} điểm], bro hiện tại mới tích lũy được [${currentPoints} điểm]. Đi gắp thêm gấu nhé! 💪`);
-                return;
-            }
-
-            alert(`Chúc mừng bro! Yêu cầu đổi quà [${giftName}] thành công.\nHệ thống đang tạo phiếu (PhieuDoiQua) chờ Admin duyệt! 🎁`);
-        }
-
-        // Tự động kích hoạt khi vào trang
-        window.onload = () => {
-            loadUserDashboard();
-            loadPlayHistoryRealTime();
-        };
-    </script>
+    <script src="history.js"></script>
 </body>
 </html>

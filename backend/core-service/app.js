@@ -1,13 +1,20 @@
 const express = require('express');
 const cors = require('cors');
-const apiRoutes = require('./src/routes/authRoutes');
+const authRoutes = require('./src/routes/authRoutes');
+const adminRoutes = require('./src/routes/adminRoutes'); //  
+const staffRoutes = require('./src/routes/staffRoutes'); // Thêm route Nhân viên
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Tất cả các API sẽ có tiền tố là /api
-app.use('/api', apiRoutes);
+
+app.use('/api', authRoutes); 
+
+// Phân luồng các nhóm API hệ thống theo đúng Module cho Frontend mới
+app.use('/api/auth', authRoutes);   // Tiền tố xử lý Đăng nhập / Đăng ký riêng
+app.use('/api/admin', adminRoutes); // Tiền tố xử lý số liệu Dashboard Admin
+app.use('/api/staff', staffRoutes); // Tiền tố xử lý duyệt phiếu của Nhân viên
 
 const PORT = 3000;
 if (process.env.NODE_ENV !== 'test') {

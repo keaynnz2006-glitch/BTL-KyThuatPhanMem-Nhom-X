@@ -5,7 +5,7 @@ const CORE_SERVICE_URL = 'http://localhost:3000/api';       // Xử lý Thành v
 const OPERATION_SERVICE_URL = 'http://localhost:3001/api';  // Xử lý Danh sách máy, Lượt chơi Gacha
 
 const userId = localStorage.getItem('user_id');
-const token = localStorage.getItem('user_token'); // 🔥 ĐỒNG BỘ: Sử dụng duy nhất user_token toàn file
+const token = localStorage.getItem('user_token'); //  Sử dụng duy nhất user_token toàn file
 let selectedPaymentMethod = 'momo'; // Mặc định chọn ví momo ở giao diện
 
 // ==========================================

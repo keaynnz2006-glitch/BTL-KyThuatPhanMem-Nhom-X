@@ -54,7 +54,7 @@ async function updateQuantitiesFromDB() {
                 const dbMatch = quantities.find(q => q.id_may === machine.id);
                 if (dbMatch) {
                     machine.currentToys = parseInt(dbMatch.tong_so_luong || 0);
-                    console.log(`🤖 [Model 3001] Đã nạp động số lượng máy ${machine.id}: ${machine.currentToys} con`);
+                    console.log(` [Model 3001] Đã nạp động số lượng máy ${machine.id}: ${machine.currentToys} con`);
                 }
             });
         }

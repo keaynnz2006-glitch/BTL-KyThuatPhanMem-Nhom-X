@@ -26,7 +26,7 @@ exports.playTurn = async (req, res) => {
             machine.currentToys = currentToysInDB;
         }
     } catch (err) {
-        console.error("⚠️ Không thể lấy số lượng gấu real-time từ con 3000, sử dụng RAM tạm:", err.message);
+        console.error("Không thể lấy số lượng gấu real-time từ con 3000, sử dụng RAM tạm:", err.message);
         currentToysInDB = machine.currentToys; 
     }
 
@@ -59,7 +59,7 @@ exports.playTurn = async (req, res) => {
 
     // 2. TÍNH TOÁN KẾT QUẢ GẮP GẤU (Tỉ lệ 30%)
     let toyId = null; 
-    const trungGau = Math.random() < 0.3;
+    const trungGau = Math.random() < 0.5;
 
     if (trungGau) {
         // Trừ ảo trên RAM trước để client cập nhật ngay lập tức

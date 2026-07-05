@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Dashboard Hệ Thống</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>📊 HỆ THỐNG QUẢN TRỊ - DASHBOARD</h2>
+        <button class="btn-logout" onclick="handleLogout()">Đăng xuất</button>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card card-revenue">
+            <h3>Tổng Doanh Thu</h3>
+            <p id="stat-revenue">0đ</p>
+        </div>
+        <div class="stat-card card-stuffed">
+            <h3>Tổng Số Gấu Bông</h3>
+            <p id="stat-stuffed">0 con</p>
+        </div>
+        <div class="stat-card card-machines">
+            <h3>Máy Gắp Hoạt Động</h3>
+            <p id="stat-machines">0 máy</p>
+        </div>
+    </div>
+
+    <h3>Đơn nạp xu gần đây</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Mã Đơn</th>
+                <th>Khách Hàng</th>
+                <th>Số Tiền Nạp</th>
+                <th>Thời Gian</th>
+            </tr>
+        </thead>
+        <tbody id="recent-orders-list">
+            <tr><td colspan="4">Đang tải dữ liệu hệ thống...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

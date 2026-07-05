@@ -1,0 +1,91 @@
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: sans-serif; 
+}
+
+body { 
+    background: #f1f2f6; 
+    padding: 30px; 
+}
+
+.container { 
+    max-width: 900px; 
+    margin: 0 auto; 
+    background: white; 
+    padding: 25px; 
+    border-radius: 12px; 
+}
+
+.header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 20px; 
+    border-bottom: 2px solid #f1f2f6; 
+    padding-bottom: 15px; 
+}
+
+.btn-logout { 
+    background: #ff7675; 
+    color: white; 
+    border: none; 
+    padding: 8px 15px; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-weight: bold; 
+}
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 15px; 
+}
+
+th, td { 
+    border: 1px solid #dfe6e9; 
+    padding: 12px; 
+    text-align: center; 
+}
+
+th { 
+    background: #6c5ce7; 
+    color: white; 
+}
+
+tr:nth-child(even) { 
+    background: #f9f9f9; 
+}
+
+.status-badge { 
+    padding: 5px 10px; 
+    border-radius: 4px; 
+    font-size: 12px; 
+    font-weight: bold; 
+    display: inline-block; 
+}
+
+.status-pending { 
+    background: #ffeaa7; 
+    color: #d63031; 
+}
+
+.status-done { 
+    background: #55efc4; 
+    color: #00b894; 
+}
+
+.btn-approve { 
+    background: #00b894; 
+    color: white; 
+    border: none; 
+    padding: 6px 12px; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-weight: bold; 
+}
+
+.btn-approve:hover { 
+    background: #00a884; 
+}

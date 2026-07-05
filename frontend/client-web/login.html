@@ -3,44 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng Nhập - Cửa Hàng Gacha Gấu Bông</title>
+    <title>Đăng Nhập - Gacha Gấu Bông</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
         
         body { 
-            background: linear-gradient(135deg, #74b9ff, #a29bfe); 
-            min-height: 100vh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            padding: 20px;
+            background: #a29bfe; 
+            padding-top: 100px;
         }
         
         .login-container { 
             background: white; 
-            padding: 30px 35px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
-            width: 100%; 
-            max-width: 380px; 
+            padding: 25px; 
+            border-radius: 12px; 
+            width: 350px; 
+            margin: 0 auto;
             text-align: center;
-            height: fit-content; 
         }
         
-        .login-container h2 { color: #2d3436; margin-bottom: 6px; font-size: 24px; font-weight: 700; }
-        .login-container p { color: #636e72; font-size: 13px; margin-bottom: 20px; line-height: 1.4; }
+        .login-container h2 { color: #2d3436; margin-bottom: 8px; }
+        .login-container p { color: #636e72; font-size: 13px; margin-bottom: 20px; }
         
         .form-group { text-align: left; margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 13px; color: #2d3436; font-weight: 600; margin-bottom: 5px; }
-        .form-group input { width: 100%; padding: 10px 14px; border: 1px solid #dfe6e9; border-radius: 8px; font-size: 14px; transition: 0.3s; outline: none; }
-        .form-group input:focus { border-color: #6c5ce7; box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1); }
+        .form-group label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #dfe6e9; border-radius: 6px; font-size: 14px; }
         
-        .btn-submit { background: #6c5ce7; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 5px; transition: 0.2s; }
+        .btn-submit { background: #6c5ce7; color: white; border: none; width: 100%; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; }
         .btn-submit:hover { background: #5b4cd8; }
         
         .switch-mode { margin-top: 15px; font-size: 13px; color: #636e72; }
         .switch-mode a { color: #6c5ce7; text-decoration: none; font-weight: bold; }
-        .switch-mode a:hover { text-decoration: underline; }
+        
         .error-msg { color: #d63031; font-size: 13px; font-weight: bold; margin-top: 10px; display: none; }
     </style>
 </head>
@@ -53,7 +46,7 @@
     <form id="auth-form" onsubmit="handleAuth(event)">
         <div class="form-group">
             <label for="username">Tài khoản</label>
-            <input type="text" id="username" placeholder="Nhập tài khoản của ông..." required>
+            <input type="text" id="username" placeholder="Nhập tài khoản..." required>
         </div>
         
         <div class="form-group">
@@ -73,7 +66,7 @@
     <div class="switch-mode">
         <span id="switch-text">Chưa có tài khoản?</span> 
         <a href="#" id="switch-btn" onclick="toggleMode(event)">Đăng ký ngay</a>
-    }
+    </div>
 </div>
 
 <script>
@@ -95,8 +88,8 @@
         errorBox.style.display = "none";
         
         if (!isLoginMode) {
-            title.innerText = "📝 ĐĂNG KÝ";
-            desc.innerText = "Tạo tài khoản nhanh để tích điểm quay Gacha đổi quà to bro ơi!";
+            title.innerText = " ĐĂNG KÝ";
+            desc.innerText = "Tạo tài khoản nhanh để tích điểm đổi quà!";
             btnText.innerText = "Đăng Ký Tài Khoản";
             switchText.innerText = "Đã có tài khoản?";
             switchBtn.innerText = "Đăng nhập tại đây";
@@ -140,15 +133,21 @@
 
             if (response.ok) {
                 if (isLoginMode) {
-                   
-                    localStorage.setItem('user_token', data.token || 'fake-token-btl');
-                    localStorage.setItem('user_id', data.userId || 1);
-                    localStorage.setItem('user_role', data.vai_tro || 'KhachHang'); 
+                    localStorage.setItem('user_token', data.token);
+                    localStorage.setItem('user_id', data.userId);
+                    localStorage.setItem('user_role', data.vai_tro); 
                     
                     alert('🎉 Đăng nhập thành công!');
-                    window.location.href = 'index.html'; 
+                    
+                    if (data.vai_tro === 'Admin') {
+                       window.location.href = '../admin-dashboard/admin.html';
+                    } else if (data.vai_tro === 'NhanVien') {
+                        window.location.href = '../staff/staff.html';
+                    } else {
+                        window.location.href = 'index.html'; 
+                    }
                 } else {
-                    alert('🎉 Đăng ký thành công! Hãy tiến hành đăng nhập nhé bro.');
+                    alert('Đăng ký thành công! Hãy tiến hành đăng nhập nhé .');
                     toggleMode(e); 
                 }
             } else {
@@ -156,7 +155,7 @@
                 errorBox.style.display = "block";
             }
         } catch (error) {
-            errorBox.innerText = '❌ Không kết nối được tới Core Service Backend!';
+            errorBox.innerText = ' Không kết nối được tới Core Service Backend!';
             errorBox.style.display = "block";
         }
     }

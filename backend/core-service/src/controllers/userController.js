@@ -105,9 +105,8 @@ exports.createHistory = async (req, res) => {
     }
 };
 
-// ==========================================
-/// ==========================================
-// 5. LẤY DANH SÁCH LỊCH SỬ CHƠI CHUẨN ĐÉT THEO ERD THẬT
+
+// 5. LẤY DANH SÁCH LỊCH SỬ CHƠI 
 // ==========================================
 exports.getPlayHistory = async (req, res) => {
     const authHeader = req.headers['authorization'];
