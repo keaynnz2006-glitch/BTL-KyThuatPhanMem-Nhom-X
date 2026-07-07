@@ -13,11 +13,11 @@ const UserModel = {
         return rows[0];
     },
 
-    // Thêm người dùng mới (Mặc định khi đăng ký xong có sẵn 0 xu)
-    create: async (tai_khoan, hashedPassword, ho_ten, vai_tro) => {
+    // 🔥 ĐÃ ĐỒNG BỘ: Sử dụng cột `so_dien_thoai` khớp hoàn toàn với MySQL của bro
+    create: async (tai_khoan, hashedPassword, ho_ten, vai_tro, sdt) => {
         const [result] = await db.query(
-            'INSERT INTO NguoiDung (tai_khoan, mat_khau, ho_ten, vai_tro, so_du_xu) VALUES (?, ?, ?, ?, ?)',
-            [tai_khoan, hashedPassword, ho_ten, vai_tro || 'KhachHang', 0]
+            'INSERT INTO NguoiDung (tai_khoan, mat_khau, ho_ten, vai_tro, so_dien_thoai, so_du_xu) VALUES (?, ?, ?, ?, ?, ?)',
+            [tai_khoan, hashedPassword, ho_ten, vai_tro || 'KhachHang', sdt, 0]
         );
         return result.insertId;
     },
@@ -32,23 +32,22 @@ const UserModel = {
     },
 
     // Lưu lịch sử chơi vào MySQL
-     async savePlayHistory(id_khach_hang, id_may, id_gau_trung) {
-    
-    await db.query(
-        'INSERT INTO LichSuChoi (id_khach_hang, id_may, id_gau_trung, thoi_gian) VALUES (?, ?, ?, NOW())',
-        [id_khach_hang, id_may, id_gau_trung]
-    );
-
-    if (id_gau_trung !== null) {
+    async savePlayHistory(id_khach_hang, id_may, id_gau_trung) {
         await db.query(
-            `UPDATE gautrongmay 
-             SET so_luong_hien_tai = GREATEST(0, so_luong_hien_tai - 1) 
-             WHERE id_may = ? AND id_gau = ?`,
-            [id_may, id_gau_trung]
+            'INSERT INTO LichSuChoi (id_khach_hang, id_may, id_gau_trung, thoi_gian) VALUES (?, ?, ?, NOW())',
+            [id_khach_hang, id_may, id_gau_trung]
         );
-        console.log(` Máy ${id_may} gắp trúng Gấu ID ${id_gau_trung} `);
+
+        if (id_gau_trung !== null) {
+            await db.query(
+                `UPDATE gautrongmay 
+                 SET so_luong_hien_tai = GREATEST(0, so_luong_hien_tai - 1) 
+                 WHERE id_may = ? AND id_gau = ?`,
+                [id_may, id_gau_trung]
+            );
+            console.log(` Máy ${id_may} gắp trúng Gấu ID ${id_gau_trung} `);
+        }
     }
-}
 };
 
 module.exports = UserModel;

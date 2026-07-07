@@ -58,6 +58,11 @@
             <label for="fullname">Họ và tên</label>
             <input type="text" id="fullname" placeholder="Nguyễn Văn A">
         </div>
+
+        <div id="group-phone" class="form-group" style="display: none;">
+            <label for="phone">Số điện thoại</label>
+            <input type="text" id="phone" placeholder="09xxxxxxxx">
+        </div>
         
         <button type="submit" id="btn-text" class="btn-submit">Đăng Nhập</button>
         <div id="error-box" class="error-msg"></div>
@@ -74,7 +79,7 @@
     const CORE_SERVICE_URL = 'http://localhost:3000'; 
 
     function toggleMode(e) {
-        e.preventDefault();
+        if (e) e.preventDefault();
         isLoginMode = !isLoginMode;
         
         const title = document.getElementById('form-title');
@@ -83,9 +88,16 @@
         const switchText = document.getElementById('switch-text');
         const switchBtn = document.getElementById('switch-btn');
         const groupFullname = document.getElementById('group-fullname');
+        const groupPhone = document.getElementById('group-phone'); 
         const errorBox = document.getElementById('error-box');
         
         errorBox.style.display = "none";
+        
+        // Reset form values when switching to avoid overlapping data
+        document.getElementById('username').value = "";
+        document.getElementById('password').value = "";
+        document.getElementById('fullname').value = "";
+        document.getElementById('phone').value = "";
         
         if (!isLoginMode) {
             title.innerText = " ĐĂNG KÝ";
@@ -93,16 +105,24 @@
             btnText.innerText = "Đăng Ký Tài Khoản";
             switchText.innerText = "Đã có tài khoản?";
             switchBtn.innerText = "Đăng nhập tại đây";
+            
             groupFullname.style.display = "block";
             document.getElementById('fullname').required = true;
+            
+            groupPhone.style.display = "block";
+            document.getElementById('phone').required = true;
         } else {
             title.innerText = "🧸 ĐĂNG NHẬP";
             desc.innerText = "Chào mừng đến với hệ thống Gacha Gấu Bông!";
             btnText.innerText = "Đăng Nhập";
             switchText.innerText = "Chưa có tài khoản?";
             switchBtn.innerText = "Đăng ký ngay";
+            
             groupFullname.style.display = "none";
             document.getElementById('fullname').required = false;
+            
+            groupPhone.style.display = "none";
+            document.getElementById('phone').required = false;
         }
     }
 
@@ -119,6 +139,8 @@
         
         if (!isLoginMode) {
             bodyData.ho_ten = document.getElementById('fullname').value;
+            // 🔥 ĐÃ SỬA CHỖ NÀY: Đổi sang cấu trúc trường key 'so_dien_thoai' để khớp 100% với file controller/model nhận dữ liệu phía Backend
+            bodyData.so_dien_thoai = document.getElementById('phone').value; 
             bodyData.vai_tro = 'KhachHang'; 
         }
 
@@ -147,15 +169,15 @@
                         window.location.href = 'index.html'; 
                     }
                 } else {
-                    alert('Đăng ký thành công! Hãy tiến hành đăng nhập nhé .');
-                    toggleMode(e); 
+                    alert('Đăng ký thành công! Hãy tiến hành đăng nhập nhé.');
+                    toggleMode(null); 
                 }
             } else {
                 errorBox.innerText = data.error || 'Có lỗi xảy ra, kiểm tra lại nha!';
                 errorBox.style.display = "block";
             }
         } catch (error) {
-            errorBox.innerText = ' Không kết nối được tới Core Service Backend!';
+            errorBox.innerText = '❌ Không kết nối được tới Core Service Backend!';
             errorBox.style.display = "block";
         }
     }
