@@ -45,6 +45,33 @@ class AdminModel {
         await db.query(`DELETE FROM gaubong WHERE id = ?`, [id]);
         return true;
     }
+
+    // 🌟 THÊM MỚI: Hàm xử lý nhóm doanh thu theo Ngày, Tháng, Năm (Đồng bộ 100% với hoadonnapxu)
+    static async getRevenueByTimeline(type) {
+        let formatQuery = '';
+        
+        if (type === 'day') {
+            formatQuery = "DATE_FORMAT(thoi_gian, '%Y-%m-%d')"; // Gom nhóm theo ngày (VD: 2026-07-07)
+        } else if (type === 'month') {
+            formatQuery = "DATE_FORMAT(thoi_gian, '%Y-%m')";    // Gom nhóm theo tháng (VD: 2026-07)
+        } else if (type === 'year') {
+            formatQuery = "DATE_FORMAT(thoi_gian, '%Y')";       // Gom nhóm theo năm (VD: 2026)
+        }
+
+        const query = `
+            SELECT 
+                ${formatQuery} AS moc_thoi_gian,
+                COUNT(id) AS so_luot_giao_dich,
+                SUM(so_tien_vnd) AS tong_doanh_thu
+            FROM hoadonnapxu
+            GROUP BY moc_thoi_gian
+            ORDER BY moc_thoi_gian DESC
+            LIMIT 30
+        `;
+        
+        const [rows] = await db.query(query);
+        return rows;
+    }
 }
 
 module.exports = AdminModel;

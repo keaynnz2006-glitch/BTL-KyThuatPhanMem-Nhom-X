@@ -47,3 +47,21 @@ exports.deleteToy = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
+
+// 🌟 THÊM MỚI: Hàm xử lý trả về dữ liệu doanh thu chi tiết theo Ngày/Tháng/Năm
+exports.getRevenueReport = async (req, res) => {
+    const { type } = req.query; // Nhận lên từ route dạng: ?type=day hoặc ?type=month...
+    
+    // Kiểm tra tính hợp lệ của tham số truyền lên
+    if (!['day', 'month', 'year'].includes(type)) {
+        return res.status(400).json({ success: false, message: 'Bộ lọc thời gian không hợp lệ bro ơi!' });
+    }
+
+    try {
+        // Gọi hàm từ adminModel chúng ta đã chuẩn hóa
+        const data = await AdminModel.getRevenueByTimeline(type);
+        return res.status(200).json({ success: true, data });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};

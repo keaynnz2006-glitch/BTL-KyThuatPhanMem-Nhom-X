@@ -87,3 +87,32 @@ th {
 tr:nth-child(even) { 
     background: #f9f9f9; 
 }
+
+
+.btn-filter {
+    padding: 6px 14px;
+    border: 1px solid #ccc;
+    background: white;
+    color: #555;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.btn-filter:hover {
+    background: #f1f2f6;
+}
+
+.btn-filter.active-filter {
+    background: #6c5ce7;
+    color: white;
+    border-color: #6c5ce7;
+    box-shadow: 0 2px 5px rgba(108, 92, 231, 0.2);
+}
+
+#revenue-table-body td:last-child {
+    text-align: right;
+    padding-right: 20px;
+}

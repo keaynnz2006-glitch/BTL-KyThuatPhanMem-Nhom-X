@@ -184,7 +184,7 @@ async function playGame(machineId, cost, machineName) {
 }
 
 
-// 7. LOGIC TẢI LỊCH SỬ CHƠI TỪ MYSQL (RENDER LÊN TRANG HISTORY.HTML)
+
 async function loadPlayHistory() {
     const tableBody = document.getElementById('history-table-body');
     if (!tableBody) return; // Nếu không đứng ở trang history.html thì bỏ qua không chạy

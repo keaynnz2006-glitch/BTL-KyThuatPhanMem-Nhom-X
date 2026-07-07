@@ -1,5 +1,6 @@
 const API_URL = 'http://localhost:3000/api/admin/stats';
 const TOY_API_URL = 'http://localhost:3000/api/admin/toys'; // API quản lý gấu bông riêng biệt
+const REVENUE_API_URL = 'http://localhost:3000/api/admin/revenue-report'; // 🌟 THÊM MỚI: API báo cáo doanh thu chi tiết
 const token = localStorage.getItem('user_token');
 const role = localStorage.getItem('user_role');
 
@@ -8,8 +9,8 @@ if (!token || role !== 'Admin') {
     alert('Bro không có quyền truy cập vùng này!');
     window.location.href = '../login.html'; 
 }
-// 1. QUẢN LÝ SỐ LIỆU DASHBOARD REAL-TIME
 
+// 1. QUẢN LÝ SỐ LIỆU DASHBOARD REAL-TIME
 async function loadDashboardData() {
     try {
         const response = await fetch(API_URL, {
@@ -50,10 +51,70 @@ async function loadDashboardData() {
     }
 }
 
-// 2. TÍNH NĂNG THÊM / BỚT GẤU TRONG KHO
+// 🌟 THÊM MỚI REAL-TIME: Hàm gọi API lấy báo cáo doanh thu theo Ngày/Tháng/Năm
+async function loadRevenueReport(type, btnElement) {
+    // Nếu có truyền vào nút bấm thì cập nhật class CSS active, không thì thôi
+    if (btnElement) {
+        document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active-filter'));
+        btnElement.classList.add('active-filter');
+    }
+
+    const tbody = document.getElementById('revenue-table-body');
+    if (!tbody) return; // Tránh lỗi nếu chưa kịp chèn HTML bảng vào giao diện
+    
+    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 30px;">⏳ Đang xử lý dữ liệu tài chính...</td></tr>`;
+
+    try {
+        const response = await fetch(`${REVENUE_API_URL}?type=${type}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+            if (result.data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 30px; color: #fab1a0;">Chưa có dữ liệu doanh thu cho mốc thời gian này!</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = ''; // Xóa thông báo cũ đi để ghi dữ liệu mới
+            
+            result.data.forEach(item => {
+                // Định dạng số tiền VND
+                const formattedRevenue = new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
+                }).format(item.tong_doanh_thu);
+
+                const row = `
+                    <tr style="border-bottom: 1px solid #f1f2f6;">
+                        <td style="padding: 15px; font-weight: 600; color: #2d3436;">${item.moc_thoi_gian}</td>
+                        <td style="padding: 15px; color: #636e72;">
+                            <span style="background: #e8f0fe; color: #1a73e8; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">
+                                ${item.so_luot_giao_dich} đơn hàng
+                            </span>
+                        </td>
+                        <td style="padding: 15px; text-align: right; font-weight: bold; color: #00b894; font-size: 16px;">
+                            ${formattedRevenue}
+                        </td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+        } else {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 30px; color: #d63031;">❌ Lỗi: ${result.message}</td></tr>`;
+        }
+    } catch (error) {
+        console.error("Lỗi gọi API doanh thu:", error);
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 30px; color: #d63031;">❌ Không thể kết nối tới máy chủ Backend!</td></tr>`;
+    }
+}
 
 
-// Hàm lấy danh sách gấu đập vào bảng quản lý kho gấu
 async function loadToyInventory() {
     try {
         const response = await fetch(TOY_API_URL, {
@@ -61,7 +122,6 @@ async function loadToyInventory() {
         });
         const data = await response.json();
 
-        // Tìm bảng danh sách gấu 
         const tbody = document.getElementById('toy-inventory-list');
         if (!tbody) return;
 
@@ -72,37 +132,37 @@ async function loadToyInventory() {
             return;
         }
 
-       data.toys.forEach(toy => {
-    const row = `
-        <tr>
-            <td>#${toy.id}</td>
-            <td><strong>${toy.ten_gau}</strong></td>
-            <td>${toy.gia_tri_diem} điểm</td>
-            <td><strong style="color: #ff9f43;">${toy.so_luong || 0} con</strong></td> <td>
-                <button onclick="handleDeleteToy(${toy.id})" style="background-color: #ff4d4d; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-weight: bold;">
-                     Bớt (Xóa)
-                </button>
-            </td> </tr>
-    `;
-    tbody.insertAdjacentHTML('beforeend', row);
-});
+        data.toys.forEach(toy => {
+            const row = `
+                <tr>
+                    <td>#${toy.id}</td>
+                    <td><strong>${toy.ten_gau}</strong></td>
+                    <td>${toy.gia_tri_diem} điểm</td>
+                    <td><strong style="color: #ff9f43;">${toy.so_luong || 0} con</strong></td> 
+                    <td>
+                        <button onclick="handleDeleteToy(${toy.id})" style="background-color: #ff4d4d; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-weight: bold;">
+                             Bớt (Xóa)
+                        </button>
+                    </td> 
+                </tr>
+            `;
+            tbody.insertAdjacentHTML('beforeend', row);
+        });
     } catch (error) {
         console.error('Lỗi khi tải danh sách kho gấu bông:', error);
     }
 }
 
-// Hàm xử lý gửi dữ liệu THÊM GẤU 
-
 async function handleAddToy(event) {
-    if (event) event.preventDefault(); // Chặn reload trang
+    if (event) event.preventDefault(); 
 
     const nameInput = document.getElementById('input-toy-name');
     const pointInput = document.getElementById('input-toy-point');
-    const quantityInput = document.getElementById('input-toy-quantity'); // Ô nhập số lượng
+    const quantityInput = document.getElementById('input-toy-quantity'); 
 
     const ten_gau = nameInput ? nameInput.value.trim() : '';
     const gia_tri_diem = pointInput ? parseInt(pointInput.value) : 0;
-    const so_luong_kho = quantityInput ? parseInt(quantityInput.value) : 0; // Đổi tên thành so_luong_kho cho đồng bộ
+    const so_luong_kho = quantityInput ? parseInt(quantityInput.value) : 0; 
 
     if (!ten_gau || !gia_tri_diem || so_luong_kho <= 0) {
         alert('Bro nhập thiếu Tên gấu, Điểm đổi hoặc Số lượng phải lớn hơn 0 nhé!');
@@ -116,7 +176,6 @@ async function handleAddToy(event) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-           
             body: JSON.stringify({ 
                 ten_gau, 
                 gia_tri_diem, 
@@ -127,12 +186,11 @@ async function handleAddToy(event) {
 
         const data = await response.json();
         if (response.ok && data.success) {
-            alert(' Đã thêm gấu vào kho thành công !');
+            alert('🎉 Đã thêm gấu vào kho thành công!');
             if (nameInput) nameInput.value = '';
             if (pointInput) pointInput.value = '';
             if (quantityInput) quantityInput.value = ''; 
             
-           
             loadDashboardData();
             loadToyInventory();
         } else {
@@ -143,7 +201,6 @@ async function handleAddToy(event) {
     }
 }
 
-// Hàm xử lý BỚT (XÓA) GẤU KHỎI KHO
 window.handleDeleteToy = async function(id) {
     if (!confirm(`Bro có chắc chắn muốn BỚT (XÓA) mã gấu #${id} này khỏi kho không?`)) return;
 
@@ -156,8 +213,6 @@ window.handleDeleteToy = async function(id) {
         const data = await response.json();
         if (response.ok && data.success) {
             alert('Đã bớt gấu thành công!');
-            
-        
             loadDashboardData();
             loadToyInventory();
         } else {
@@ -168,17 +223,18 @@ window.handleDeleteToy = async function(id) {
     }
 }
 
-
-// KHỞI CHẠY HỆ THỐNG3. 
-
+// 3. ĐĂNG XUẤT HỆ THỐNG
 function handleLogout() {
     localStorage.clear();
     window.location.href = '../login.html';
 }
 
-// Kích hoạt chạy dữ liệu khi trang sẵn sàng
+// KHỞI CHẠY HỆ THỐNG
 loadDashboardData();
-loadToyInventory(); // Tải kho gấu bông luôn
+loadToyInventory(); 
 
-// Real-time cập nhật số liệu tổng quan sau 3 giây
+
+loadRevenueReport('day', null);
+
+
 setInterval(loadDashboardData, 3000);
