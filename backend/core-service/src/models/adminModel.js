@@ -46,7 +46,7 @@ class AdminModel {
         return true;
     }
 
-    // 🌟 THÊM MỚI: Hàm xử lý nhóm doanh thu theo Ngày, Tháng, Năm (Đồng bộ 100% với hoadonnapxu)
+
     static async getRevenueByTimeline(type) {
         let formatQuery = '';
         

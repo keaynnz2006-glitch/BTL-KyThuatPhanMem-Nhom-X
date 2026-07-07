@@ -1,6 +1,6 @@
 const API_URL = 'http://localhost:3000/api/admin/stats';
-const TOY_API_URL = 'http://localhost:3000/api/admin/toys'; // API quản lý gấu bông riêng biệt
-const REVENUE_API_URL = 'http://localhost:3000/api/admin/revenue-report'; // 🌟 THÊM MỚI: API báo cáo doanh thu chi tiết
+const TOY_API_URL = 'http://localhost:3000/api/admin/toys'; 
+const REVENUE_API_URL = 'http://localhost:3000/api/admin/revenue-report';
 const token = localStorage.getItem('user_token');
 const role = localStorage.getItem('user_role');
 
@@ -51,7 +51,7 @@ async function loadDashboardData() {
     }
 }
 
-// 🌟 THÊM MỚI REAL-TIME: Hàm gọi API lấy báo cáo doanh thu theo Ngày/Tháng/Năm
+
 async function loadRevenueReport(type, btnElement) {
     // Nếu có truyền vào nút bấm thì cập nhật class CSS active, không thì thôi
     if (btnElement) {

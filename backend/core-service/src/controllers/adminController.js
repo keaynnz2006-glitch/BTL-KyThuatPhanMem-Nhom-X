@@ -48,7 +48,7 @@ exports.deleteToy = async (req, res) => {
     }
 };
 
-// 🌟 THÊM MỚI: Hàm xử lý trả về dữ liệu doanh thu chi tiết theo Ngày/Tháng/Năm
+
 exports.getRevenueReport = async (req, res) => {
     const { type } = req.query; // Nhận lên từ route dạng: ?type=day hoặc ?type=month...
     

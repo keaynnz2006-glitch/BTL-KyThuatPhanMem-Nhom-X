@@ -69,7 +69,7 @@ async function approveTicket(ticketId) {
         if (response.ok && data.success) {
             alert('🎉 Duyệt phiếu thành công!');
             fetchExchangeTickets(); 
-            loadMachinesInventory(); // 🌟 Tự động cập nhật lại số lượng gấu trong máy sau khi trừ kho thành công
+            loadMachinesInventory(); 
         } else {
             alert(' Lỗi: ' + data.message);
         }
@@ -78,7 +78,7 @@ async function approveTicket(ticketId) {
     }
 }
 
-// 3. HÀM XỬ LÝ KHI BẤM HỦY PHIẾU
+
 async function rejectTicket(ticketId) {
     if (!confirm(`Bro có chắc chắn muốn HỦY và XÓA hẳn phiếu #${ticketId} này không?`)) return;
     try {
@@ -91,13 +91,13 @@ async function rejectTicket(ticketId) {
         });
         const data = await response.json();
         if (response.ok && data.success) {
-            alert('❌ Đã hủy và xóa phiếu thành công!');
+            alert(' Đã hủy và xóa phiếu thành công!');
             fetchExchangeTickets(); 
         } else {
-            alert('❌ Lỗi: ' + data.message);
+            alert(' Lỗi: ' + data.message);
         }
     } catch (error) {
-        alert('❌ Lỗi kết nối server khi hủy phiếu!');
+        alert(' Lỗi kết nối server khi hủy phiếu!');
     }
 }
 

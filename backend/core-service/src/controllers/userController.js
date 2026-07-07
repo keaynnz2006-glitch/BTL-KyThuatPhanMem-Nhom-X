@@ -2,14 +2,12 @@ const UserModel = require('../models/userModel');
 const { CoinContext } = require('../strategies/coinPromotion');
 const jwt = require('jsonwebtoken');
 
-
 const db = require('../config/database'); 
 
 const JWT_SECRET = 'sieu-bao-mat-btl-2026';
 
 
 // 1. LẤY SỐ DƯ TÀI KHOẢN
-
 exports.getBalance = async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -27,8 +25,7 @@ exports.getBalance = async (req, res) => {
 };
 
 
-
-
+// 2. XỬ LÝ NẠP TIỀN VÀ TẠO HÓA ĐƠN
 exports.recharge = async (req, res) => {
     const { userId, amountVnd } = req.body;
     if (!userId || !amountVnd) return res.status(400).json({ error: 'Thiếu thông tin số tiền nạp!' });
@@ -38,19 +35,15 @@ exports.recharge = async (req, res) => {
         context.setStrategyByDate(); 
         const exactCoins = context.executeStrategy(amountVnd);
 
-        
         await UserModel.updateBalance(userId, exactCoins);
 
-      
         const queryInvoice = `
             INSERT INTO hoadonnapxu (id_khach_hang, so_tien_vnd, so_xu_nhan, phuong_thuc, trang_thai) 
             VALUES (?, ?, ?, 'Chuyển khoản', 'Thành công')
         `;
         const [result] = await db.query(queryInvoice, [userId, amountVnd, exactCoins]);
 
-
         const maDonVuaTao = result.insertId;
-
 
         res.json({ 
             success: true, 
@@ -65,8 +58,7 @@ exports.recharge = async (req, res) => {
 };
 
 
-
-
+// 3. TRỪ XU NGƯỜI CHƠI KHI GẮP GẤU
 exports.deductCoins = async (req, res) => { 
     const { coinsToDeduct } = req.body;
 
@@ -102,8 +94,7 @@ exports.deductCoins = async (req, res) => {
 };
 
 
-
-
+// 4. LƯU LỊCH SỬ CHƠI GAME
 exports.createHistory = async (req, res) => {
     const { machineId, toyId } = req.body;
     
@@ -114,7 +105,6 @@ exports.createHistory = async (req, res) => {
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
         
-  
         await UserModel.savePlayHistory(decoded.id, machineId, toyId);
 
         return res.status(201).json({ success: true, message: 'Đã ghi nhận lịch sử chơi!' });
@@ -125,6 +115,7 @@ exports.createHistory = async (req, res) => {
 };
 
 
+// 5. XUẤT LỊCH SỬ CHƠI RA GIAO DIỆN
 exports.getPlayHistory = async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -163,16 +154,17 @@ exports.getPlayHistory = async (req, res) => {
 };
 
 
-
+// 6. ĐỒNG BỘ SỐ LƯỢNG VÀ MẢNG ID GẤU THẬT TỪ DATABASE
 exports.getMachineQuantities = async (req, res) => {
     try {
-        
+      
         const [rows] = await db.query(
             `SELECT 
                 g.id_may, 
                 m.ten_may,
                 m.so_xu_tren_luot, 
-                SUM(g.so_luong_hien_tai) as tong_so_luong 
+                SUM(g.so_luong_hien_tai) as tong_so_luong,
+                GROUP_CONCAT(g.id_gau) as danh_sach_id_gau 
              FROM gautrongmay g
              INNER JOIN maygapgau m ON g.id_may = m.id
              GROUP BY g.id_may, m.ten_may, m.so_xu_tren_luot`

@@ -250,7 +250,7 @@ exports.replenishBearToMachine = async (req, res) => {
 
         const queryReplenish = `
             INSERT INTO gautrongmay (id_may, id_gau, so_luong_hien_tai, ty_le_trung)
-            VALUES (?, ?, ?, 0.3)
+            VALUES (?, ?, ?, 0.5)
             ON DUPLICATE KEY UPDATE so_luong_hien_tai = so_luong_hien_tai + ?
         `;
         await connection.query(queryReplenish, [id_may, id_gau, qty, qty]);
