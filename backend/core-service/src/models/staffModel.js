@@ -39,7 +39,7 @@ const StaffModel = {
         return result;
     },
 
-
+    // 4. Lấy danh sách chi tiết máy và gấu trong máy
     getMachinesAndToys: async () => {
         const query = `
             SELECT 
@@ -56,6 +56,13 @@ const StaffModel = {
         `;
         const [rows] = await db.query(query);
         return rows;
+    },
+
+   
+    deleteToyFromMachine: async (machineId, toyId) => {
+        const query = 'DELETE FROM gautrongmay WHERE id_may = ? AND id_gau = ?';
+        const [result] = await db.query(query, [machineId, toyId]);
+        return result;
     }
 };
 

@@ -78,7 +78,7 @@ async function approveTicket(ticketId) {
     }
 }
 
-
+// 3. HÀM HỦY PHIẾU ĐỔI QUÀ
 async function rejectTicket(ticketId) {
     if (!confirm(`Bro có chắc chắn muốn HỦY và XÓA hẳn phiếu #${ticketId} này không?`)) return;
     try {
@@ -100,8 +100,6 @@ async function rejectTicket(ticketId) {
         alert(' Lỗi kết nối server khi hủy phiếu!');
     }
 }
-
-
 
 // 4. Tự động tải danh sách Máy và Gấu đổ vào các ô <select> khi nhân viên mở trang
 async function initReplenishForm() {
@@ -172,8 +170,7 @@ document.getElementById('replenish-form')?.addEventListener('submit', async (e) 
     }
 });
 
-
-
+// 6. TẢI TOÀN BỘ KHO GẤU TRONG MÁY (CÓ TÍCH HỢP NÚT XÓA)
 async function loadMachinesInventory() {
     const container = document.getElementById('machines-inventory-container');
     if (!container) return; 
@@ -208,10 +205,18 @@ async function loadMachinesInventory() {
                         const qtyColor = isWarning ? '#ff7675' : '#20bf6b';
                         const badgeWarning = isWarning ? ' <span style="color: red; font-size: 11px; font-weight: bold;">(Sắp hết!)</span>' : '';
 
+                        //  hàm onclick gọi API delete
                         listGauHTML += `
                             <li style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed #eee; font-size: 14px;">
                                 <span style="color: #2d3436;"> ${gau.ten_gau}</span>
-                                <span style="font-weight: bold; color: ${qtyColor};">${gau.so_luong} con${badgeWarning}</span>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="font-weight: bold; color: ${qtyColor};">${gau.so_luong} con${badgeWarning}</span>
+                                    <button onclick="removeToyFromMachine(${machine.id_may}, ${gau.id_gau}, '${gau.ten_gau}')" 
+                                            style="background: #ff7675; color: white; border: none; border-radius: 4px; padding: 2px 6px; cursor: pointer; font-size: 11px; font-weight: bold;" 
+                                            title="Xóa gấu khỏi máy">
+                                         Xóa
+                                    </button>
+                                </div>
                             </li>
                         `;
                     });
@@ -241,6 +246,34 @@ async function loadMachinesInventory() {
     }
 }
 
+
+async function removeToyFromMachine(machineId, toyId, toyName) {
+    if (!confirm(`Bro có chắc chắn muốn XÓA hẳn loại gấu [${toyName}] ra khỏi Máy #${machineId} không?`)) return;
+
+    try {
+        const response = await fetch(`${CORE_SERVICE_URL}/api/staff/machines/remove-toy`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id_may: machineId, id_gau: toyId }) // Truyền đúng 2 trường id_may và id_gau theo Controller
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            alert(' ' + data.message);
+            loadMachinesInventory(); // Tải lại danh sách kho máy thời gian thực để cập nhật UI
+        } else {
+            alert(' Lỗi: ' + data.message);
+        }
+    } catch (error) {
+        console.error('Lỗi khi gọi API xóa gấu khỏi máy:', error);
+        alert(' Không thể kết nối server để xóa gấu!');
+    }
+}
+
 function handleLogout() {
     localStorage.clear();
     window.location.href = '../login.html';
@@ -252,5 +285,5 @@ initReplenishForm();
 loadMachinesInventory(); 
 
 // THIẾT LẬP THỜI GIAN ĐỊNH KỲ QUÉT TỰ ĐỘNG
-setInterval(fetchExchangeTickets, 3000);   // 3 giây quét phiếu đổi quà mới một lần
-setInterval(loadMachinesInventory, 10000); // 10 giây đồng bộ lại số lượng gấu trong máy một lần
+setInterval(fetchExchangeTickets, 5000);   
+setInterval(loadMachinesInventory, 10000); 

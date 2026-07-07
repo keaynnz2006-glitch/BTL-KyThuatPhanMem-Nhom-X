@@ -303,3 +303,32 @@ exports.getMachinesInventory = async (req, res) => {
         return res.status(500).json({ success: false, message: 'Lỗi hệ thống khi tải kho gấu của máy!' });
     }
 };
+
+
+exports.removeToyFromMachine = async (req, res) => {
+    const { id_may, id_gau } = req.body; // Frontend truyền ID máy và ID gấu lên body
+
+    if (!id_may || !id_gau) {
+        return res.status(400).json({ success: false, message: 'Thiếu thông tin ID máy (id_may) hoặc ID gấu (id_gau) rồi bro!' });
+    }
+
+    try {
+        // Thực hiện xóa dòng liên kết gấu khỏi máy chỉ định trong DB
+        const [result] = await db.query(
+            `DELETE FROM gautrongmay WHERE id_may = ? AND id_gau = ?`,
+            [parseInt(id_may), parseInt(id_gau)]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy cặp Máy và Gấu này trong hệ thống để xóa!' });
+        }
+
+        return res.status(200).json({ 
+            success: true, 
+            message: ` Đã xóa hoàn toàn gấu ID #${id_gau} khỏi Máy #${id_may} thành công!` 
+        });
+    } catch (error) {
+        console.error(" Lỗi khi nhân viên xóa gấu khỏi máy:", error);
+        return res.status(500).json({ success: false, message: 'Lỗi hệ thống staff, không thể thực hiện xóa gấu!' });
+    }
+};

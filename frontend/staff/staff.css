@@ -11,7 +11,7 @@ body {
 }
 
 .container { 
-    max-width: 1000px; /* Tăng nhẹ độ rộng lên 1000px để hàng Grid chứa Card gấu nhìn thoáng hơn bro nhé */
+    max-width: 1000px; 
     margin: 0 auto; 
     background: white; 
     padding: 25px; 
@@ -123,4 +123,39 @@ tr:nth-child(even) {
 #machines-inventory-container ul::-webkit-scrollbar-thumb {
     background: #dfe6e9;
     border-radius: 4px;
+}
+
+
+
+/* Nhóm bọc số lượng con và nút xóa nằm thẳng hàng trên UI */
+.bear-action-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Style nút xóa gấu nhỏ gọn, màu đỏ nhạt phối tông sành điệu */
+.btn-remove-toy {
+    background: #ffe6e6;
+    color: #d63031;
+    border: 1px solid #ffccd5;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Hiệu ứng di chuột vào rực cháy mạnh mẽ hơn */
+.btn-remove-toy:hover {
+    background: #d63031;
+    color: white;
+    border-color: #d63031;
+    box-shadow: 0 2px 6px rgba(214, 48, 49, 0.2);
+}
+
+/* Hiệu ứng click thụt nút tạo cảm giác bấm vật lý chân thực */
+.btn-remove-toy:active {
+    transform: scale(0.93);
 }
