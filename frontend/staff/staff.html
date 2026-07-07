@@ -15,7 +15,7 @@
     </div>
 
     <div class="replenish-container" style="background: #fff; padding: 25px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-        <h3 style="margin-top: 0; color: #333; display: flex; align-items: center; gap: 8px; padding: 20px "> Nạp Thêm Gấu Vào Máy Gắp</h3>
+        <h3 style="margin-top: 0; color: #333; display: flex; align-items: center; gap: 8px; padding: 10px 0;"> Nạp Thêm Gấu Vào Máy Gắp</h3>
             
         <form id="replenish-form" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
             
@@ -43,7 +43,7 @@
     </div>
 
     <h3>Danh sách phiếu đổi quà của khách hàng</h3>
-    <table>
+    <table style="margin-bottom: 40px;">
         <thead>
             <tr>
                 <th>Mã Phiếu</th>
@@ -59,6 +59,16 @@
             <tr><td colspan="7" style="text-align: center;">Đang tải danh sách phiếu...</td></tr>
         </tbody>
     </table>
+
+    <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-top: 30px;">
+        <h3 style="margin-top: 0; margin-bottom: 20px; color: #333; display: flex; align-items: center; gap: 8px;">
+             TÌNH TRẠNG GẤU BÔNG TRONG CÁC MÁY 
+        </h3>
+        
+        <div id="machines-inventory-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+            <p style="color: #888; font-style: italic;"> Đang kiểm tra dữ liệu gấu trong các máy gắp...</p>
+        </div>
+    </div>
 </div>
 
 <script src="staff.js"></script>

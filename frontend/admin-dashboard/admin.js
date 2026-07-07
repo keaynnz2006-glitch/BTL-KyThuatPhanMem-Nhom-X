@@ -106,11 +106,11 @@ async function loadRevenueReport(type, btnElement) {
                 tbody.insertAdjacentHTML('beforeend', row);
             });
         } else {
-            tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 30px; color: #d63031;">❌ Lỗi: ${result.message}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 30px; color: #d63031;"> Lỗi: ${result.message}</td></tr>`;
         }
     } catch (error) {
         console.error("Lỗi gọi API doanh thu:", error);
-        tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 30px; color: #d63031;">❌ Không thể kết nối tới máy chủ Backend!</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 30px; color: #d63031;"> Không thể kết nối tới máy chủ Backend!</td></tr>`;
     }
 }
 

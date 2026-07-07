@@ -11,11 +11,12 @@ body {
 }
 
 .container { 
-    max-width: 900px; 
+    max-width: 1000px; /* Tăng nhẹ độ rộng lên 1000px để hàng Grid chứa Card gấu nhìn thoáng hơn bro nhé */
     margin: 0 auto; 
     background: white; 
     padding: 25px; 
     border-radius: 12px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .header { 
@@ -35,6 +36,11 @@ body {
     border-radius: 6px; 
     cursor: pointer; 
     font-weight: bold; 
+    transition: background 0.2s;
+}
+
+.btn-logout:hover {
+    background: #e17055;
 }
 
 table { 
@@ -84,8 +90,37 @@ tr:nth-child(even) {
     border-radius: 4px; 
     cursor: pointer; 
     font-weight: bold; 
+    transition: background 0.2s;
 }
 
 .btn-approve:hover { 
     background: #00a884; 
+}
+
+
+#machines-inventory-container > div {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Hiệu ứng hover nhẹ khi nhân viên di chuột qua từng Card máy gắp */
+#machines-inventory-container > div:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(108, 92, 231, 0.15) !important; /* Đổ tí bóng mờ màu tím cho nghệ sĩ */
+    border-color: #6c5ce7 !important;
+}
+
+
+#machines-inventory-container ul {
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+#machines-inventory-container ul::-webkit-scrollbar {
+    width: 4px;
+}
+
+#machines-inventory-container ul::-webkit-scrollbar-thumb {
+    background: #dfe6e9;
+    border-radius: 4px;
 }

@@ -15,4 +15,6 @@ router.delete('/tickets/reject/:id', staffController.rejectTicket);
 router.get('/machines', staffController.getAllMachines);
 router.get('/bears', staffController.getAllBears);
 router.post('/bears/replenish', staffController.replenishBearToMachine);
+//
+router.get('/machines-inventory', staffController.getMachinesInventory);
 module.exports = router;    

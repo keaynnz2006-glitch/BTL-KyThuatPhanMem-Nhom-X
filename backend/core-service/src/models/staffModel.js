@@ -37,6 +37,25 @@ const StaffModel = {
         const query = 'UPDATE phieudoiqua SET id_nhan_vien_duyet = ? WHERE id = ?';
         const [result] = await db.query(query, [staffId, ticketId]);
         return result;
+    },
+
+
+    getMachinesAndToys: async () => {
+        const query = `
+            SELECT 
+                m.id AS id_may, 
+                m.ten_may, 
+                m.trang_thai,
+                g.id AS id_gau,
+                g.ten_gau,
+                gtm.so_luong_hien_tai
+            FROM maygapgau m
+            LEFT JOIN gautrongmay gtm ON m.id = gtm.id_may
+            LEFT JOIN gaubong g ON gtm.id_gau = g.id
+            ORDER BY m.id ASC, gtm.so_luong_hien_tai DESC
+        `;
+        const [rows] = await db.query(query);
+        return rows;
     }
 };
 

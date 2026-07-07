@@ -144,7 +144,7 @@ async function loadMachines() {
 
     } catch (error) {
         console.error('Lỗi kết nối API lấy danh sách máy:', error);
-        machineGrid.innerHTML = '<p style="color: red; font-weight: bold; padding: 20px;">❌ Không kết nối được tới Service quản lý máy 3001!</p>';
+        machineGrid.innerHTML = '<p style="color: red; font-weight: bold; padding: 20px;"> Không kết nối được tới Service quản lý máy 3001!</p>';
     }
 }
 
@@ -167,19 +167,19 @@ async function playGame(machineId, cost, machineName) {
 
         if (response.ok && data.success) {
             if (data.ketQua === "WIN") { 
-                alert(`🎉 CHÚC MỪNG! ${data.message}\n🧸 Số gấu còn lại trong máy: ${data.soGauConLaiTrongMay}`);
+                alert(`🎉 CHÚC MỪNG! ${data.message}\n Số gấu còn lại trong máy: ${data.soGauConLaiTrongMay}`);
             } else {
-                alert(`😢 ${data.message} (Còn lại ${data.soGauConLaiTrongMay} con gấu trong máy)`);
+                alert(` ${data.message} (Còn lại ${data.soGauConLaiTrongMay} con gấu trong máy)`);
             }
             // Chơi xong re-load real-time số dư ví tiền và trạng thái máy gắp
             await loadUserDashboard(); 
             await loadMachines();
         } else {
-            alert(`❌ Thất bại: ${data.message || 'Không thể thực hiện lượt chơi này!'}`);
+            alert(` Thất bại: ${data.message || 'Không thể thực hiện lượt chơi này!'}`);
             await loadMachines(); 
         }
     } catch (error) {
-        alert('❌ Không kết nối được tới Service vận hành máy!');
+        alert(' Không kết nối được tới Service vận hành máy!');
     }
 }
 

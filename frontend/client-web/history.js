@@ -67,7 +67,7 @@ async function loadPlayHistoryRealTime() {
 
             const badgeHtml = isWin 
                 ? `<span class="badge-result badge-win"> TRÚNG: ${row.ten_gau || `Gấu ID ${row.id_gau_trung}`}</span>` 
-                : `<span class="badge-result badge-lose">❌ HỤT RỒI</span>`;
+                : `<span class="badge-result badge-lose">HỤT RỒI</span>`;
 
             return `
                 <tr>

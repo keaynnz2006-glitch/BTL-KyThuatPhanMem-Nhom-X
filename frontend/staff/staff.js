@@ -8,7 +8,7 @@ if (!token || (role !== 'NhanVien' && role !== 'Admin')) {
     window.location.href = '../login.html';
 }
 
-// 1. TẢI DANH SÁCH PHIẾU LÊN BẢNG GIAO DIỆN (Giữ nguyên của bro)
+// 1. TẢI DANH SÁCH PHIẾU LÊN BẢNG GIAO DIỆN
 async function fetchExchangeTickets() {
     try {
         const response = await fetch(`${CORE_SERVICE_URL}/api/staff/tickets`, {
@@ -29,13 +29,11 @@ async function fetchExchangeTickets() {
             data.tickets.forEach(ticket => {
                 const dateFormatted = new Date(ticket.thoi_gian).toLocaleString('vi-VN');
                 
-                // Tạo đồng thời cả nút Duyệt và nút Hủy phiếu
                 const actionHtml = `
                     <button class="btn-approve" onclick="approveTicket(${ticket.id})">✔ Duyệt cấp quà</button>
                     <button class="btn-reject" onclick="rejectTicket(${ticket.id})" style="background-color: #d63031; color: white; border: none; padding: 6px 12px; margin-left: 5px; border-radius: 4px; cursor: pointer; font-weight: bold;">❌ Hủy phiếu</button>
                 `;
 
-                // Chèn thêm cột hiển thị điểm hiện tại của khách hàng (${ticket.diem_hien_tai})
                 const row = `
                     <tr>
                         <td>#${ticket.id}</td>
@@ -55,7 +53,7 @@ async function fetchExchangeTickets() {
     }
 }
 
-// 2. HÀM XỬ LÝ KHI BẤM DUYỆT PHIẾU (Giữ nguyên của bro)
+// 2. HÀM XỬ LÝ KHI BẤM DUYỆT PHIẾU
 async function approveTicket(ticketId) {
     if (!confirm(`Bro có chắc chắn xác nhận đã giao quà cho phiếu #${ticketId} không?`)) return;
     try {
@@ -71,15 +69,16 @@ async function approveTicket(ticketId) {
         if (response.ok && data.success) {
             alert('🎉 Duyệt phiếu thành công!');
             fetchExchangeTickets(); 
+            loadMachinesInventory(); // 🌟 Tự động cập nhật lại số lượng gấu trong máy sau khi trừ kho thành công
         } else {
-            alert('❌ Lỗi: ' + data.message); // Hiện thông báo chặn nếu khách bị hết điểm thực tế hoặc máy hết gấu
+            alert(' Lỗi: ' + data.message);
         }
     } catch (error) {
-        alert('❌ Lỗi kết nối server!');
+        alert(' Lỗi kết nối server!');
     }
 }
 
-// 3. HÀM XỬ LÝ KHI BẤM HỦY PHIẾU (Giữ nguyên của bro)
+// 3. HÀM XỬ LÝ KHI BẤM HỦY PHIẾU
 async function rejectTicket(ticketId) {
     if (!confirm(`Bro có chắc chắn muốn HỦY và XÓA hẳn phiếu #${ticketId} này không?`)) return;
     try {
@@ -102,9 +101,7 @@ async function rejectTicket(ticketId) {
     }
 }
 
-// ====================================================================
-// 🔥 THÊM MỚI: CÁC HÀM LOGIC XỬ LÝ NẠP GẤU VÀO MÁY CHO NHÂN VIÊN
-// ====================================================================
+
 
 // 4. Tự động tải danh sách Máy và Gấu đổ vào các ô <select> khi nhân viên mở trang
 async function initReplenishForm() {
@@ -139,13 +136,13 @@ async function initReplenishForm() {
             }
         }
     } catch (error) {
-        console.error('❌ Lỗi khởi tạo dữ liệu form nạp gấu:', error);
+        console.error(' Lỗi khởi tạo dữ liệu form nạp gấu:', error);
     }
 }
 
 // 5. Đón sự kiện khi nhân viên ấn nút "XÁC NHẬN NẠP" trên Form
 document.getElementById('replenish-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault(); // Chặn hành vi load lại trang mặc định
+    e.preventDefault(); 
 
     const idMay = document.getElementById('select-machine').value;
     const idGau = document.getElementById('select-bear').value;
@@ -165,23 +162,95 @@ document.getElementById('replenish-form')?.addEventListener('submit', async (e) 
 
         if (response.ok && data.success) {
             alert(data.message);
-            document.getElementById('input-quantity').value = ''; // Reset rỗng ô số lượng để tiện nhập lần sau
+            document.getElementById('input-quantity').value = ''; 
+            loadMachinesInventory(); 
         } else {
-            alert('❌ Lỗi: ' + data.message);
+            alert(' Lỗi: ' + data.message);
         }
     } catch (error) {
-        alert('❌ Lỗi kết nối server khi nạp gấu!');
+        alert(' Lỗi kết nối server khi nạp gấu!');
     }
 });
+
+
+
+async function loadMachinesInventory() {
+    const container = document.getElementById('machines-inventory-container');
+    if (!container) return; 
+
+    try {
+        const response = await fetch(`${CORE_SERVICE_URL}/api/staff/machines-inventory`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+            container.innerHTML = ''; 
+
+            if (result.data.length === 0) {
+                container.innerHTML = `<p style="color: #ff7675; font-weight: bold;">Hệ thống chưa có máy gắp gấu nào được cấu hình bro ơi!</p>`;
+                return;
+            }
+
+            result.data.forEach(machine => {
+                let listGauHTML = '';
+
+                if (machine.danh_sach_gau.length === 0) {
+                    listGauHTML = `<li style="color: #ff7675; list-style: none; font-size: 13px; font-style: italic; padding: 6px 0;"> Máy trống, chưa được cài loại gấu nào!</li>`;
+                } else {
+                    machine.danh_sach_gau.forEach(gau => {
+                        // Cảnh báo nếu gấu trong máy sắp hết (<= 5 con)
+                        const isWarning = gau.so_luong <= 5;
+                        const qtyColor = isWarning ? '#ff7675' : '#20bf6b';
+                        const badgeWarning = isWarning ? ' <span style="color: red; font-size: 11px; font-weight: bold;">(Sắp hết!)</span>' : '';
+
+                        listGauHTML += `
+                            <li style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed #eee; font-size: 14px;">
+                                <span style="color: #2d3436;"> ${gau.ten_gau}</span>
+                                <span style="font-weight: bold; color: ${qtyColor};">${gau.so_luong} con${badgeWarning}</span>
+                            </li>
+                        `;
+                    });
+                }
+
+                const cardHTML = `
+                    <div style="background: #ffffff; border: 1px solid #dfe6e9; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: all 0.3s;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #6c5ce7; padding-bottom: 8px;">
+                            <strong style="color: #6c5ce7; font-size: 15px;"> ${machine.ten_may} (ID: #${machine.id_may})</strong>
+                            <span style="font-size: 11px; font-weight: bold; padding: 2px 6px; border-radius: 4px; background: ${machine.trang_thai === 'Hoạt động' ? '#e8f5e9' : '#ffeacc'}; color: ${machine.trang_thai === 'Hoạt động' ? '#2e7d32' : '#ef6c00'};">
+                                ${machine.trang_thai}
+                            </span>
+                        </div>
+                        <ul style="padding: 0; margin: 0; list-style: none;">
+                            ${listGauHTML}
+                        </ul>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', cardHTML);
+            });
+        } else {
+            container.innerHTML = `<p style="color: red;"> Không thể tải danh sách: ${result.message}</p>`;
+        }
+    } catch (error) {
+        console.error("Lỗi gọi API kho máy:", error);
+        container.innerHTML = `<p style="color: red;"> Lỗi kết nối máy chủ Backend!</p>`;
+    }
+}
 
 function handleLogout() {
     localStorage.clear();
     window.location.href = '../login.html';
 }
 
-// Chạy khởi tạo danh sách phiếu và danh sách lựa chọn của form nạp gấu
+// KHỞI CHẠY HỆ THỐNG BAN ĐẦU
 fetchExchangeTickets();
 initReplenishForm();
+loadMachinesInventory(); 
 
-// Quét định kỳ lại danh sách phiếu đổi quà sau mỗi 3 giây
-setInterval(fetchExchangeTickets, 3000);
+// THIẾT LẬP THỜI GIAN ĐỊNH KỲ QUÉT TỰ ĐỘNG
+setInterval(fetchExchangeTickets, 3000);   // 3 giây quét phiếu đổi quà mới một lần
+setInterval(loadMachinesInventory, 10000); // 10 giây đồng bộ lại số lượng gấu trong máy một lần

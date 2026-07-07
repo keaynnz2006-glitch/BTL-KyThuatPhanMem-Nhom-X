@@ -13,6 +13,6 @@ const pool = mysql.createPool({
 // Kiểm tra kết nối nhanh khi khởi động backend
 pool.getConnection()
     .then(() => console.log(' MySQL Workbench đã kết nối thành công!'))
-    .catch(err => console.error('❌ Lỗi kết nối CSDL ', err.message));
+    .catch(err => console.error(' Lỗi kết nối CSDL ', err.message));
 
 module.exports = pool;
