@@ -148,7 +148,7 @@ exports.getPlayHistory = async (req, res) => {
             history: rows 
         });
     } catch (error) {
-        console.error(" Lỗi lấy lịch sử chơi từ MySQL:", error);
+        console.error(" Lỗi lấy lịch sử chơi từ MySQ    L:", error);
         return res.status(500).json({ success: false, message: 'Lỗi hệ thống không lấy được lịch sử!' });
     }
 };
