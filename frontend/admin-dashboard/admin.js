@@ -4,13 +4,15 @@ const REVENUE_API_URL = 'http://localhost:3000/api/admin/revenue-report';
 const token = localStorage.getItem('user_token');
 const role = localStorage.getItem('user_role');
 
-// 🛡️ Kiểm tra quyền truy cập hệ thống bảo mật
+
 if (!token || role !== 'Admin') {
     alert('Bro không có quyền truy cập vùng này!');
     window.location.href = '../login.html'; 
 }
 
-// 1. QUẢN LÝ SỐ LIỆU DASHBOARD REAL-TIME
+
+// QUẢN LÝ SỐ LIỆU DASHBOARD REAL-TIME
+
 async function loadDashboardData() {
     try {
         const response = await fetch(API_URL, {
@@ -223,18 +225,112 @@ window.handleDeleteToy = async function(id) {
     }
 }
 
-// 3. ĐĂNG XUẤT HỆ THỐNG
+
+//  2. TÍNH NĂNG MỚI: TẢI DANH SÁCH THÀNH VIÊN THỰC TẾ RA BẢNG
+
+async function loadUserManagement() {
+    try {
+        const response = await fetch('http://localhost:3000/api/admin/users', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+
+        const tbody = document.getElementById('user-management-list');
+        if (!tbody) return;
+
+        tbody.innerHTML = '';
+
+        if (!data.success || !data.users || data.users.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #888;">Không có thành viên nào!</td></tr>`;
+            return;
+        }
+
+        data.users.forEach(user => {
+            let roleBadge = '';
+            if (user.vai_tro === 'Admin') {
+                roleBadge = `<span style="background: #fed330; color: #000; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px;">Admin</span>`;
+            } else if (user.vai_tro === 'NhanVien') {
+                roleBadge = `<span style="background: #45aaf2; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px;">Nhân Viên</span>`;
+            } else {
+                roleBadge = `<span style="background: #a5b1c2; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px;">Khách Hàng</span>`;
+            }
+
+            const row = `
+                <tr>
+                    <td><strong>#${user.id}</strong></td>
+                    <td style="text-align: left; padding-left: 15px;">${user.ho_ten}</td>
+                    <td><code>${user.tai_khoan}</code></td>
+                    <td>${roleBadge}</td>
+                    <td>
+                        <select onchange="handleUpdateUserRole(${user.id}, this.value)" style="padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px; cursor: pointer; background: white;">
+                            <option value="">-- Cấp quyền --</option>
+                            <option value="KhachHang" ${user.vai_tro === 'KhachHang' ? 'disabled' : ''}>Khách Hàng</option>
+                            <option value="NhanVien" ${user.vai_tro === 'NhanVien' ? 'disabled' : ''}>Nhân Viên</option>
+                            <option value="Admin" ${user.vai_tro === 'Admin' ? 'disabled' : ''}>Admin</option>
+                        </select>
+                    </td>
+                </tr>
+            `;
+            tbody.insertAdjacentHTML('beforeend', row);
+        });
+    } catch (error) {
+        console.error('Lỗi tải danh sách người dùng:', error);
+    }
+}
+
+
+
+
+window.handleUpdateUserRole = async function(targetUserId, newRole) {
+    if (!newRole) return;
+
+    if (!confirm(`Bro có chắc muốn đổi vai trò của tài khoản #${targetUserId} thành [${newRole}] không?`)) {
+        loadUserManagement();
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:3000/api/admin/update-role', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                target_user_id: targetUserId,
+                new_role: newRole
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            alert('🎉 ' + data.message);
+            loadUserManagement(); 
+        } else {
+            alert('Lỗi: ' + data.message);
+            loadUserManagement();
+        }
+    } catch (error) {
+        console.error('Lỗi cập nhật phân quyền:', error);
+        alert('Không thể kết nối đến server backend!');
+        loadUserManagement();
+    }
+}
+
+
 function handleLogout() {
     localStorage.clear();
     window.location.href = '../login.html';
 }
 
-// KHỞI CHẠY HỆ THỐNG
+
 loadDashboardData();
 loadToyInventory(); 
-
+loadUserManagement(); // Gọi danh sách user mới
 
 loadRevenueReport('day', null);
 
-
+// Đồng bộ real-time số liệu dashboard cũ của bro
 setInterval(loadDashboardData, 3000);

@@ -32,7 +32,7 @@ class AdminModel {
         return rows;
     }
 
-    // 🔥 SỬA BIẾN Ở ĐÂY: Đổi thẳng tên tham số thứ 3 thành so_luong_kho cho khỏi lệch phe
+    
     static async addToy(ten_gau, gia_tri_diem, so_luong_kho, hinh_anh) {
         const [result] = await db.query(
             `INSERT INTO gaubong (ten_gau, gia_tri_diem, so_luong_kho, hinh_anh) VALUES (?, ?, ?, ?)`,
@@ -70,6 +70,26 @@ class AdminModel {
         `;
         
         const [rows] = await db.query(query);
+        return rows;
+    }
+
+   
+    static async updateUserRole(userId, newRole) {
+     
+        const [result] = await db.query(
+            `UPDATE nguoidung SET vai_tro = ? WHERE id = ?`,
+            [newRole, userId]
+        );
+    
+        return result.affectedRows; 
+    }
+    //
+    static async getAllUsers() {
+        const [rows] = await db.query(`
+            SELECT id, tai_khoan, ho_ten, vai_tro, so_dien_thoai 
+            FROM nguoidung 
+            ORDER BY id DESC
+        `);
         return rows;
     }
 }

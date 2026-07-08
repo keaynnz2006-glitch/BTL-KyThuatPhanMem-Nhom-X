@@ -18,7 +18,7 @@ const HolidayStrategy = {
 class CoinContext {
     constructor() {
         this.strategy = NormalStrategy;
-    }
+    } 
 
     // Tự động kiểm tra ngày tháng để nạp chiến lược phù hợp
     setStrategyByDate(dateStr) {

@@ -107,7 +107,7 @@
         </button>
     </div>
 
-    <table>
+    <table style="margin-bottom: 40px;">
         <thead>
             <tr style="background-color: #f1f2f6;">
                 <th>Mã Gấu</th>
@@ -121,6 +121,27 @@
             <tr><td colspan="5">Đang tải danh sách kho gấu bông...</td></tr>
         </tbody>
     </table>
+
+    <h3> Quản lý & Phân quyền Thành viên</h3>
+    <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+        <div style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px;">
+            <table style="margin: 0; width: 100%; border-collapse: collapse;">
+                <thead style="position: sticky; top: 0; background-color: #f1f2f6; z-index: 10;">
+                    <tr>
+                        <th>ID</th>
+                        <th>Họ Và Tên</th>
+                        <th>Tài Khoản</th>
+                        <th>Vai Trò Hiện Tại</th>
+                        <th>Cấp Quyền Mới</th>
+                    </tr>
+                </thead>
+                <tbody id="user-management-list">
+                    <tr><td colspan="5" style="text-align: center; color: #888;">⏳ Đang tải danh sách thành viên...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
 
 <script src="admin.js"></script>
